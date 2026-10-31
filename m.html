@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html data-page-node-id="HkIGVrnHAS80YSHezzSoX9" lang="zh-CN">
+<head data-page-node-id="PN2yLqw6LnBGsLpI1CyeyX">
+<meta data-page-node-id="ocwsVSk9KK8GwDtOKh8KTN" charset="UTF-8">
+<meta data-page-node-id="SXbAEnnZUdV7nou2sWgl4Y" content="width=device-width,initial-scale=1" name="viewport">
+<title data-page-node-id="u6Ir42R3rKbSt5wcUmLLFH" data-pnid-children="cwkB498VLwPlQlac3OqPpm">AI 动态错题本 · 交互原型</title>
+<style data-page-node-id="5nHKY0nO3Snclj0Z639scV" data-pnid-children="q7CGwoEnqsaHOBhutxXoOM">
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#f0f2f5;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+     display:flex;justify-content:center;padding:20px 0;color:#1a1a1a}
+.phone{width:390px;height:844px;background:#fff;border-radius:36px;overflow:hidden;position:relative;
+       box-shadow:0 12px 48px rgba(0,0,0,.18);border:1px solid #e5e7eb;display:flex;flex-direction:column}
+.statusbar{height:44px;background:#fff;display:flex;align-items:center;justify-content:space-between;
+           padding:0 22px;font-size:13px;font-weight:600;flex-shrink:0}
+.screen{flex:1;overflow-y:auto;background:#f5f6f8}
+.screen::-webkit-scrollbar{width:0}
+.page{display:none;padding:14px 16px 20px}
+.page.active{display:block}
+.tabbar{height:64px;background:#fff;border-top:1px solid #eee;display:flex;flex-shrink:0;padding-bottom:8px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+     font-size:11px;color:#9aa0a6;cursor:pointer}
+.tab.active{color:#2b6cf6}
+.tab .ic{font-size:20px;line-height:1}
+.tab-fab{width:54px;height:54px;border-radius:50%;background:#2b6cf6;flex-shrink:0;align-self:center;
+        margin-top:-6px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+        box-shadow:0 4px 14px rgba(43,108,246,.34)}
+.tab-fab:active{background:#1f5fd8}
+
+.hd{font-size:20px;font-weight:700;margin:6px 0 4px}
+.sub{font-size:12px;color:#8a9099;margin-bottom:14px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #eef0f3}
+.t-l{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.t-l .more{font-size:11px;color:#2b6cf6;font-weight:500}
+
+/* mastery 台阶 */
+.steps{display:flex;align-items:flex-end;gap:8px;margin:6px 0 12px}
+.step{flex:1;text-align:center}
+.step .bar{height:36px;border-radius:6px 6px 0 0;background:#e8eaed;display:flex;align-items:center;
+           justify-content:center;font-size:11px;color:#9aa0a6;font-weight:600}
+.step.a1 .bar{height:26px}.step.a2 .bar{height:40px}.step.a3 .bar{height:54px}
+.step.on .bar{background:#2b6cf6;color:#fff}
+.step .nm{font-size:10px;color:#8a9099;margin-top:5px}
+.step.on .nm{color:#2b6cf6;font-weight:600}
+.mastery-now{font-size:13px;color:#333;background:#f0f5ff;border-radius:10px;padding:10px 12px;line-height:1.6}
+.mastery-now b{color:#2b6cf6}
+
+table.mini{width:100%;border-collapse:collapse;font-size:12px}
+table.mini th{text-align:left;color:#8a9099;font-weight:500;padding:6px 4px;border-bottom:1px solid #f0f1f3}
+table.mini td{padding:8px 4px;border-bottom:1px solid #f6f7f9}
+.delta{font-weight:700}
+.delta.up{color:#16a34a}.delta.dn{color:#dc2626}.delta.fl{color:#9aa0a6}
+
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f6f7f9;font-size:13px}
+.row:last-child{border:0}
+
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:5px;background:#f0f2f5;color:#666;margin-right:5px}
+.tag.kp{background:#eef4ff;color:#2b6cf6}
+.tag.em{background:#fff2ec;color:#e8590c}
+.tag.ok{background:#eafaf0;color:#16a34a}
+.tag.warn{background:#fff6e5;color:#d97706}
+.tag.lv1{background:#fdeeee;color:#dc2626}
+.tag.lv2{background:#fff6e5;color:#d97706}
+.tag.lv3{background:#eafaf0;color:#16a34a}
+
+.q{background:#f7f8fa;border-radius:10px;padding:10px;font-size:13px;line-height:1.7;margin:8px 0}
+.q .lbl{font-size:11px;color:#8a9099}
+.why{font-size:11px;color:#8a9099;background:#fafbfc;border-left:2px solid #c7d7f7;padding:6px 9px;
+     border-radius:0 6px 6px 0;margin-top:8px;line-height:1.5}
+
+.btn{background:#2b6cf6;color:#fff;border:0;border-radius:10px;padding:13px;font-size:15px;font-weight:600;
+     width:100%;cursor:pointer;margin-top:6px}
+.btn.ghost{background:#fff;color:#2b6cf6;border:1px solid #c3d4fb}
+.btn:active{opacity:.8}
+
+.chips{display:flex;gap:8px;margin:8px 0 4px}
+.chip{flex:1;text-align:center;padding:11px 0;border:1px solid #e3e6ea;border-radius:10px;font-size:14px;
+      font-weight:600;color:#555;cursor:pointer;background:#fff}
+.chip.on{border-color:#2b6cf6;background:#f0f5ff;color:#2b6cf6}
+
+/* 年级 / 科目 */
+.sc-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.sc-lab{font-size:12px;color:#8a9099;width:28px;flex-shrink:0}
+.sc-row .chips{flex:1;margin:0}
+.sc-row .chips.wrap{flex-wrap:wrap}
+.sc-row .chip{flex:0 0 auto;padding:9px 15px}
+.sc-note{font-size:12px;color:#8a9099;margin-top:10px;padding-top:10px;
+        border-top:1px solid #f2f3f5;line-height:1.7}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.g4 .stat{background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:11px 8px;
+        text-align:center}
+.g4 .n{font-size:19px;font-weight:700;line-height:1.2}
+.g4 .l{font-size:10.5px;color:#8a9099;margin-top:2px}
+.empty{text-align:center;padding:30px 16px}
+.empty .em-i{font-size:28px;margin-bottom:9px}
+.empty .em-t{font-size:14px;font-weight:600;margin-bottom:5px}
+.empty .em-s{font-size:12px;color:#8a9099;margin-bottom:14px;line-height:1.7}
+
+.q-tag{font-size:11px;color:#2b6cf6;background:#f0f5ff;border-radius:20px;padding:3px 10px;
+       width:fit-content;margin:2px auto 10px}
+.opt{display:block;border:1px solid #e3e6ea;border-radius:10px;padding:11px 13px;margin:7px 0;font-size:14px;
+     cursor:pointer;background:#fff}
+.opt.on{border-color:#2b6cf6;background:#f0f5ff}
+.opt.right{border-color:#16a34a;background:#eafaf0}
+.opt.wrong{border-color:#dc2626;background:#fdeeee}
+input.inp{width:100%;border:1px solid #e3e6ea;border-radius:10px;padding:11px 13px;font-size:14px;outline:none}
+select.sel{width:100%;border:1px solid #e3e6ea;border-radius:10px;padding:11px 12px;font-size:14px;
+           background:#fff;color:#1a1d21;outline:none;font-family:inherit}
+input.inp:focus{border-color:#2b6cf6}
+
+.correct{background:#eafaf0;border-radius:10px;padding:11px;font-size:13px;line-height:1.6}
+.wrong{background:#fdeeee;border-radius:10px;padding:11px;font-size:13px;line-height:1.6}
+.res-hd{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot.y{background:#16a34a}.dot.n{background:#dc2626}
+
+.note{font-size:11px;color:#9aa0a6;line-height:1.6;margin-top:8px}
+.sticky-note{position:sticky;top:0;background:#f0f5ff;border-bottom:1px solid #dbe6fb;padding:9px 16px;
+             font-size:11px;color:#2b6cf6;z-index:5}
+
+/* 薄弱项卡片 */
+.weak{background:#fff;border-radius:12px;padding:11px 13px;margin-bottom:8px;border:1px solid #eef0f3;
+      border-left:3px solid #d97706;cursor:pointer}
+.weak:active{background:#fafbfc}
+.weak.p1{border-left-color:#dc2626}
+.weak.p2{border-left-color:#d97706}
+.weak.p3{border-left-color:#c8ccd2}
+.weak-hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.weak-kp{font-size:15px;font-weight:700;line-height:1.3}
+.weak-ft{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:9px}
+.weak-acc{font-size:11.5px;color:#8a9099}
+.weak-acc b{font-size:13.5px;font-weight:700;margin-left:3px}
+.weak-acc b.red{color:#dc2626}.weak-acc b.grn{color:#16a34a}.weak-acc b.org{color:#d97706}
+.weak-go{font-size:12px;color:#2b6cf6;font-weight:600;background:#f0f5ff;border-radius:8px;
+         padding:6px 11px;white-space:nowrap}
+.weak-go:active{background:#e2ecff}
+.grp-t{font-size:12px;font-weight:700;color:#8a9099;margin:14px 0 8px}
+
+/* 知识点详情 */
+.back{font-size:13px;color:#2b6cf6;cursor:pointer;margin-bottom:10px;display:inline-block}
+.kp-hd{font-size:19px;font-weight:700;margin:2px 0 4px}
+.prog{height:7px;border-radius:4px;background:#e8eaed;overflow:hidden;margin:10px 0 6px}
+.prog i{display:block;height:100%;background:#2b6cf6}
+.qitem{background:#fff;border:1px solid #eef0f3;border-radius:12px;padding:12px;margin-bottom:9px}
+.arow{display:flex;align-items:flex-start;gap:9px;margin-bottom:13px}
+.arow.all{border-top:1px solid #f2f4f6;padding-top:12px;margin-top:2px}
+.arow .nm{width:30px;font-size:12.5px;color:#1a1d21;padding-top:1px}
+.arow .num{width:52px;text-align:right;font-size:13px;font-weight:700;line-height:1.2;color:#1a1d21}
+.arow .num .dlt{display:block;font-size:10px;font-weight:700;margin-top:1px}
+.arow .num .dlt.up{color:#16a34a}
+.arow .num .dlt.dn{color:#dc2626}
+.arow .tracks{flex:1;padding-top:2px}
+.trow{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.trow:last-child{margin-bottom:0}
+.trow .tl{width:22px;font-size:9.5px;color:#9aa0a6;font-style:normal}
+.trow .track{flex:1;height:7px;background:#f0f1f3;border-radius:5px;overflow:hidden}
+.trow .fill{display:block;height:100%;border-radius:5px}
+.trow .fill.cur{background:#2b6cf6}
+.trow .fill.prev{background:#cfd8e6}
+.qitem{cursor:pointer}
+.qitem:active{background:#f5f8ff}
+.qi-go{font-size:11.5px;color:#2b6cf6;font-weight:600;margin-top:8px}
+.qitem .qm .last{color:#2b6cf6;font-weight:600}
+.kp-row{cursor:pointer}
+.qitem .qt{font-size:13px;line-height:1.6}
+.qitem .qa{font-size:12px;color:#666;margin-top:7px;line-height:1.6}
+.qitem .qm{font-size:10.5px;color:#9aa0a6;margin-top:7px}
+
+/* 底部抽屉（改题量 / 导出配置） */
+.mask{position:absolute;top:0;left:0;right:0;bottom:64px;background:rgba(0,0,0,.38);z-index:20;display:none}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:18px 18px 0 0;z-index:21;
+       padding:16px 16px 22px;display:none;max-height:78%;overflow-y:auto}
+.sheet-hd{font-size:16px;font-weight:700;margin-bottom:4px;text-align:center}
+.sheet-sub{font-size:11.5px;color:#8a9099;text-align:center;margin-bottom:14px}
+
+/* 导入 */
+.up-opt{border:1.5px solid #e3e6ea;border-radius:12px;padding:15px;text-align:center;font-size:14px;
+        font-weight:600;cursor:pointer;margin-bottom:10px;background:#fff}
+.up-opt:active{background:#f5f7ff;border-color:#2b6cf6}
+.up-opt .s{font-size:11px;color:#8a9099;font-weight:400;margin-top:4px}
+.bar-out{height:8px;border-radius:4px;background:#e8eaed;overflow:hidden;margin:14px 0 8px}
+.bar-in{height:100%;background:#2b6cf6;width:0%;transition:width .3s}
+.cfm{background:#fff;border:1px solid #eef0f3;border-radius:12px;padding:12px;margin-bottom:9px}
+.cfm .no{font-size:11px;color:#2b6cf6;font-weight:700}
+.cfm .ct{font-size:13px;line-height:1.6;margin:5px 0 7px}
+.cfm .ca{font-size:12px;color:#666}
+.cfm .cd{font-size:11px;color:#8a9099;margin-top:7px;border-top:1px solid #f4f5f7;padding-top:7px}
+.cfm .cd b{color:#2b6cf6}
+/* 逐题确认可编辑态 */
+.cfm.done{border-color:#b7e2c1;background:#f7fcf9}
+.cfm input,.cfm select{font:inherit;font-size:12px;border:1px solid #e3e6ea;border-radius:6px;
+  padding:3px 6px;color:#222;background:#fff}
+.cfm input.tvin{width:100%;font-size:13px;font-weight:600;margin-bottom:2px}
+.cfm input.nin{width:40px;text-align:center}
+.cfm input.din{width:62px}
+.cfm .act{margin-top:9px;display:flex;gap:8px;align-items:center}
+.cfm .ok-t{font-size:11px;color:#16a34a;font-weight:700}
+.btn.mini{padding:8px 13px;font-size:12px;border-radius:8px}
+.btn.dis{background:#e5e7eb!important;color:#9ca3af!important}
+
+/* 打印 / A4 */
+.a4{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:20px 18px;margin-bottom:12px}
+.a4-hd{font-size:15px;font-weight:700;text-align:center;margin-bottom:3px}
+.a4-meta{font-size:11px;color:#777;text-align:center;margin-bottom:16px;
+         border-bottom:1px solid #ddd;padding-bottom:10px}
+.a4-q{margin-bottom:15px;page-break-inside:avoid}
+.a4-opt{margin-top:6px;font-size:13px;color:#444;line-height:1.9}
+.a4-q .n{font-weight:700;margin-right:3px}
+.a4-blank{height:30px}
+.a4-ans{margin-top:20px;border-top:1px dashed #bbb;padding-top:12px;font-size:12px;color:#444;line-height:1.9}
+@media print{
+  body{background:#fff;padding:0;display:block}
+  .phone{width:auto;height:auto;border:0;box-shadow:none;border-radius:0;display:block}
+  .statusbar,.tabbar,.mask,.sheet,.noprint{display:none!important}
+  .screen{overflow:visible;background:#fff}
+  .page{display:none!important;padding:0}
+  .page.printing{display:block!important}
+  .a4{border:0;border-radius:0;padding:0;margin:0}
+}
+
+/* ===== 成就 ===== */
+.ach-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #f6f7f9;cursor:pointer}
+.ach-row:last-of-type{border-bottom:0}
+.ach-rs{width:26px;height:26px;border-radius:8px;background:#eaf1ff;color:#2b6cf6;font-size:10px;font-weight:800;
+        display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ach-rn{flex:1;font-size:12.5px;font-weight:600;color:#1a1d21}
+.ach-rd{font-size:10.5px;color:#9aa0a6}
+.ach-item{display:flex;gap:10px;background:#fff;border:1px solid #eef0f3;border-left:3px solid #2b6cf6;
+          border-radius:12px;padding:11px 12px;margin-bottom:9px}
+.ach-item.doing{border-left-color:#e2e5ea}
+.ach-seal{width:42px;height:42px;border-radius:11px;flex-shrink:0;background:linear-gradient(150deg,#3d7bfa,#2b6cf6);
+          color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
+          box-shadow:0 4px 10px rgba(43,108,246,.22)}
+.ach-seal b{font-size:13px;line-height:1.1}
+.ach-seal i{font-size:7.5px;font-style:normal;opacity:.85;letter-spacing:.4px}
+.ach-item.doing .ach-seal{background:#f4f5f7;color:#aab0b8;box-shadow:none;border:1px dashed #d7dbe0}
+.ach-bd{flex:1;min-width:0}
+.ach-hdt{display:flex;align-items:flex-start;gap:6px}
+.ach-t{font-size:14px;font-weight:700;flex:1;line-height:1.35}
+.ach-pill{font-size:9px;padding:1.5px 5px;border-radius:4px;background:#eafaf0;color:#16a34a;font-weight:700;
+          white-space:nowrap;flex-shrink:0}
+.ach-pill.f{background:#fff6e5;color:#d97706}
+.ach-item.doing .ach-pill{background:#fff6e5;color:#d97706}
+.ach-fact{font-size:11.5px;color:#4a5058;line-height:1.55;margin-top:4px}
+.ach-fact b{color:#1a1d21}
+.ach-meta2{font-size:10px;color:#9aa0a6;margin-top:5px;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.ach-dot{width:2.5px;height:2.5px;border-radius:50%;background:#cfd3d8}
+.ach-pbar{height:4px;border-radius:2px;background:#eef0f3;overflow:hidden;margin-top:7px}
+.ach-pbar i{display:block;height:100%;background:#f0b429}
+.ach-chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:11px;padding-bottom:2px}
+.ach-chips::-webkit-scrollbar{height:0}
+.ach-chip{flex:0 0 auto;padding:5px 9px;border:1px solid #e3e6ea;border-radius:8px;font-size:11px;font-weight:600;
+          color:#666;background:#fff;cursor:pointer;white-space:nowrap}
+.ach-chip.on{border-color:#2b6cf6;background:#f0f5ff;color:#2b6cf6}
+.ach-sec{font-size:11px;font-weight:700;color:#8a9099;margin:14px 0 7px;display:flex;justify-content:space-between}
+.ach-sec span{font-weight:500;color:#b0b6bd}
+.ach-empty{font-size:10.5px;color:#a0a6ad;text-align:center;line-height:1.7;padding:12px 0}
+.ach-rules{background:#fff;border:1px solid #eef0f3;border-radius:12px;padding:12px;margin-top:12px}
+.ach-rules h4{font-size:11.5px;margin-bottom:6px}
+.ach-rules ul{list-style:disc}
+.ach-rules li{font-size:10.5px;color:#5f6670;line-height:1.7;margin-left:14px;margin-bottom:2px}
+.ach-rules li b{color:#1a1d21}
+
+/* ===== 知识点掌握进度条 ===== */
+.kp-row{padding:9px 0;border-bottom:1px solid #f6f7f9}
+.kp-row:last-of-type{border-bottom:0}
+.kp-hd{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.kp-nm{font-size:12.5px;font-weight:600;color:#1a1d21}
+.kp-pct{font-size:12.5px;font-weight:700;color:#1a1d21}
+.kp-bar{position:relative;height:8px;border-radius:5px;background:#eef0f3;overflow:hidden;margin:6px 0 5px}
+.kp-bar i{display:block;height:100%;border-radius:5px}
+.kp-bar::after{content:'';position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent calc(33.33% - .5px),#fff calc(33.33% - .5px),#fff calc(33.33% + .5px),
+    transparent calc(33.33% + .5px),transparent calc(66.67% - .5px),#fff calc(66.67% - .5px),#fff calc(66.67% + .5px),transparent calc(66.67% + .5px))}
+.lv1{background:#cfe0fd}
+.lv2{background:#7aa7f7}
+.lv3{background:#2b6cf6}
+.kp-ft{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#9aa0a6}
+.kp-lv{font-weight:700}
+.lv1-t{color:#8aa6cf}
+.lv2-t{color:#4a7fd4}
+.lv3-t{color:#2b6cf6}
+.kp-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:11px;font-size:9.5px;color:#9aa0a6}
+.kp-legend span{display:flex;align-items:center;gap:4px}
+.kp-legend i{width:16px;height:6px;border-radius:3px}
+</style>
+</head>
+<body data-page-node-id="QgNLcdOhDQNaW8NuFlWAfW">
+<div data-page-node-id="nYUZzaXi3eif0ZSCYuDiRD" class="phone">
+  <div data-page-node-id="H8Y5WWvbUwpBJxaFEvco7v" class="statusbar"><span data-page-node-id="crEUKA6CKdIXSWDJ1perho"><!--pnid:UQkjXnM4ZQezbcgqeqc4oN-->9:41</span><span data-page-node-id="hl6nazpwNXGMCSWD0GDjTC"><!--pnid:pmV41bmQqGUGoDBcRlFJIr-->●●● 100%</span></div>
+  <div data-page-node-id="m2Ds5OVFX8iuCLLpZQfEdT" class="screen">
+
+    <!--pnid:8uMT9i66CMegZiLxxG9PNd--><!-- ================= 首页 / 导入 ================= -->
+        <div data-page-node-id="4MAG5hLKY5wmIMCE78kA9B" class="page active" id="p-home">
+      <div data-page-node-id="CsLgv2lJYPYtrOwf1OXFmt" class="hd"><!--pnid:ruulPOKCPEehguMd4m1D1O-->今天</div>
+      <div data-page-node-id="xz9wMeOo9qZTcdtg31NX1a" class="sub" id="hd-sub"><!--pnid:zhNdsA27IHcf5stP5G80zW-->已连续练习 6 天 · 上次练习 2 天前</div>
+
+      <!-- ============ 年级 / 科目 ============ -->
+      <div class="card" id="sc-card">
+        <div class="t-l"><!--pnid:SCOPET-->我的年级和科目<span class="more" id="sc-now"></span></div>
+        <div class="sc-row"><span class="sc-lab">年级</span><div class="chips wrap" id="g-chips"></div></div>
+        <div class="sc-row"><span class="sc-lab">科目</span><div class="chips wrap" id="s-chips"></div></div>
+        <div class="sc-note" id="sc-note"></div>
+      </div>
+
+      <div class="g4" id="stats" style="margin-bottom:12px"></div>
+
+      <div id="home-body">
+        <div data-page-node-id="4Vn3qvHk58lIXQ1Eh0CyKI" class="card">
+          <div data-page-node-id="s0tVeyXHe8CPS6bF2dX3Z" class="t-l"><!--pnid:1n9QI9dX710c4UkOh3n9vh-->今日概览</div>
+          <div class="row"><span>高频错误机制</span><b id="o-em"></b></div>
+          <div class="row"><span>建议练习量</span><b id="o-n"></b></div>
+          <div class="row"><span>最近一次导入</span><b id="o-imp"></b></div>
+        </div>
+
+        <div data-page-node-id="QI8wJGsktUhw8hNUGfMf3B" class="card">
+          <div data-page-node-id="QQ7559zcqWp8J0LZhuNl3" class="t-l"><!--pnid:PmD49Pfl598U3tiS7YWMZW-->最近导入</div>
+          <div id="o-recent"></div>
+        </div>
+        <button data-page-node-id="TaMWvs1CE4wsbww6JU7yKo" class="btn" id="o-start" onclick="enterPractice()"><!--pnid:Qzny4gga3K8G5lHptiaHJm-->今天开始练习</button>
+      </div>
+
+      <div class="card empty" id="sc-empty" style="display:none">
+        <div class="em-i">📭</div>
+        <div class="em-t">「<span id="sc-empty-k"></span>」下还没有错题</div>
+        <div class="em-s">导入试卷后会自动归集到当前年级和科目下<br>不同年级、不同科目各算各的，不会混在一起</div>
+        <button class="btn ghost" onclick="doImport()">导入试卷</button>
+      </div>
+    </div>
+
+    <div data-page-node-id="fqhpELGzIHXjI0VGLHrOSQ" class="page" id="p-import">
+      <!--pnid:BJQHb4uTwCpYBzRnF9s74I--><!-- 态 A：选来源 -->
+      <div data-page-node-id="gzbnvGXoWBjRGYUG9qofcc" id="im-1">
+        <div data-page-node-id="pWA31aHv6kZGPF82M0w1Mw" class="back" onclick="go('p-home')"><!--pnid:jmNomqii2dQQr2T9RfbeD3-->‹ 今天</div>
+        <div data-page-node-id="WttXOqkWQDi5P1JJRBXiCe" class="hd"><!--pnid:fe1nJQ6AQcj6ca2VNZAcJP-->导入试卷</div>
+        <div data-page-node-id="9MgWUqvHv8byy0zXE1FKyH" class="sub"><!--pnid:hsnCFZmWdNwXpUODKv2eAn-->拍照或选图，识别错题与作答情况</div>
+        <div data-page-node-id="VoVzEV2PjPYFlJk8VtM2fj" class="up-opt" onclick="doImport()">
+          <div data-page-node-id="2wE5LVAb6q4KCj6VKMh2hJ" style="font-size:24px"><!--pnid:LKplz3OhIKceKyJ0SjPODp-->📷</div><!--pnid:Cl42Rza0RAePatkNPW3bnI-->拍照
+          <div data-page-node-id="1NrxVvDeg6DssYyb1kEyvi" class="s"><!--pnid:H2zOuKRal9Bjy53ZgjeGnK-->对准已批改的试卷</div>
+        </div>
+        <div data-page-node-id="expu9w6gqVpHgjLlAYHUOe" class="up-opt" onclick="doImport()">
+          <div data-page-node-id="OMeMsEYsUbUVo07fHeeJnX" style="font-size:24px"><!--pnid:4z1CYMVcOCtU7lYOuIZ9jt-->🖼️</div><!--pnid:LfQ0zVDWVb31ePp3biYuUp-->从图库选择
+          <div data-page-node-id="r1CBwlUy6HMrIs5r04IwQR" class="s"><!--pnid:FRNuwIoAcDEjPzMfb6rPkS-->支持多张，一次导入一套卷</div>
+        </div>
+        <div data-page-node-id="qbuKXlYkmw23HS30TvVXK3" class="card" style="margin-top:6px">
+          <div data-page-node-id="XVfgPsLfPrUSYFDkPzemx4" class="t-l"><!--pnid:xfUsjGAmiMaoCw4boHzNiH-->这张卷子的作答日期</div>
+          <div data-page-node-id="PhnzAy7Ec1gaLMsERBmLpr" class="row" style="padding-top:0; border:0"><span data-page-node-id="6CcRTJZdjO6XbgfcvhQFzs"><!--pnid:bM0Rz8dzFHX6EHeY1aQFAI-->10-28（默认今天）</span><b data-page-node-id="TyPwU6r6KgVOhxtkiXOrMS" style="color:#2b6cf6"><!--pnid:OYD37rs8vRtdE1zBxzzaRE-->修改</b></div>
+        </div>
+      </div>
+
+      <!--pnid:PqyzzFFpjapjtw5bsAH7Ei--><!-- 态 B：识别中 -->
+      <div data-page-node-id="oJh7I0yDtBi9eYjIDmzySi" id="im-2" style="display:none">
+        <div data-page-node-id="XEQxdRlokHPFU9ouNyhfp6" class="hd"><!--pnid:nQL1dunIwdRvWhlSSQFCDY-->识别中</div>
+        <div data-page-node-id="jLRrxhJcNl0Ekzskuc6W2g" class="sub"><!--pnid:w6pCKNZqVgSBd0wIQfBU3L-->正在定位题号、判断对错、推测错因</div>
+        <div data-page-node-id="Y5xalSO4Nb7HE4lB7FStgT" class="card">
+          <div data-page-node-id="URNtMyx9yG5wts6UyqiuN4" class="bar-out"><div data-page-node-id="Dnop67dHkF4clLqhKIYI1g" class="bar-in" id="im-bar"></div></div>
+          <div data-page-node-id="Z37vFOcA2qsD7ncJQc4MUA" class="row"><span data-page-node-id="XRDTZtHm7eFEAQLIcax48v"><!--pnid:dc9ZhZ4xoZF8tB4dZwXwiN-->已识别</span><b data-page-node-id="4rHgvyunU6pYmqXtufFTBQ" id="im-cnt"><!--pnid:izin4CRn7Ladr0zCzxr2MH-->0 / 8 题</b></div>
+        </div>
+      </div>
+
+      <!--pnid:jkVuYxcQXW9uFw8FUc7ysR--><!-- 态 C：逐题确认 -->
+      <div data-page-node-id="hv63idKmlS0WrYtwVqG1h7" id="im-3" style="display:none">
+        <div data-page-node-id="czrTyWgEGleT9vW1DgiH8M" class="hd"><!--pnid:umxNNBZozLP98CqRQ2JTbO-->逐题确认</div>
+        <div data-page-node-id="WnOmO54Hb1yPLVnIxpxA0j" class="sub"><!--pnid:S04zlDB5gERCGsKPnbHpxg-->识别到 8 题，其中 5 题判为错误 · 逐题确认后才能入库</div>
+        <div data-page-node-id="NuFt0M7SVtgh42ZwFTjGo2" id="im-list"></div>
+        <button data-page-node-id="ihbRjpsPjEriHaUqXz1KV4" class="btn" id="im-fin" onclick="finishImport()"><!--pnid:Rh3z4VJoNbIP8uhzEhfnnL-->确认入库（5 条错题）</button>
+        <div data-page-node-id="9cYURpKeVj7NvEMJJQ85P1" class="sub" id="im-tip" style="color:#16a34a"></div>
+      </div>
+    </div>
+
+    <!--pnid:2XXMtpRM3cVoVpbPTV8s5S--><!-- ================= 导出打印 ================= -->
+    <div data-page-node-id="ow9GpjCyiRVBAgVzZxnddE" class="page" id="p-print">
+      <div data-page-node-id="HjUijJf6mbmS5MtiFVzcfX" class="back noprint" onclick="go(lastPage)"><!--pnid:zFRfcrsKPrN1HUtTcA4VIp-->‹ 返回</div>
+      <div data-page-node-id="350fqWOGWoLREFymohJsYH" class="hd noprint"><!--pnid:oYQzogLLs1XjMf5nckxKTC-->导出打印</div>
+      <div data-page-node-id="n3fWoMYQkBcqJDVd2ikruP" class="sub noprint" id="pr-sub"></div>
+      <div data-page-node-id="lZ2lhKYapZokHfvVtk4dgG" id="pr-body"></div>
+      <button data-page-node-id="5rxIqHf8mhih7GmoBGfwCE" class="btn noprint" onclick="window.print()"><!--pnid:Fq18U3OYnqKEvlnCW4AYvb-->打印 / 存为 PDF</button>
+      <button data-page-node-id="7oXEzPoD0MKWndRFUosv7c" class="btn ghost noprint" onclick="go(lastPage)"><!--pnid:meQFlo1RRVjgG3sU6mPL55-->返回</button>
+    </div>
+
+    <!--pnid:2Nrm0KnKWtJ3mwAT31Afrr--><!-- ================= 错题本（按薄弱项组织） ================= -->
+    <div data-page-node-id="89CaWgoYRS0ZeVEVzpMYHh" class="page" id="p-book">
+      <div data-page-node-id="b3BPznoxuE3WavFyJjdoTa" class="hd"><!--pnid:P0UCvgVIwUSFJHy2LFCKRK-->错题本</div>
+      <div data-page-node-id="DsbbAOfhccj6o8AtU0KA3g" class="sub"><!--pnid:2RgimJmbKj21Owe0kKSJHj-->6 个知识点 · 共 17 条错题 · 按熟悉程度排序</div>
+
+      <div data-page-node-id="g4WdC7zY19O3qeLtteKLcK" class="chips">
+        <div data-page-node-id="yvINKrWPy24KxpofJa2BEi" class="chip on" onclick="filterWeak('all',this)"><!--pnid:2iT93evMILdielOHrOs8S8-->全部 6</div>
+        <div data-page-node-id="xrIUN1qp1rGZIiv4hNpaKb" class="chip" onclick="filterWeak('p1',this)"><!--pnid:NfvwMVhzlOFUP4Q1MdiqxR-->不熟 3</div>
+        <div data-page-node-id="XHPPTcQezXJZAuJQoCbCND" class="chip" onclick="filterWeak('p2',this)"><!--pnid:hlKgnASxa7YU3qCDY8G4C1-->一般 2</div>
+        <div data-page-node-id="AqM7TpQJDIbvkvcbA1JuxP" class="chip" onclick="filterWeak('p3',this)"><!--pnid:XscITYU8w1hZFTLHjQhMHW-->熟悉 1</div>
+      </div>
+
+      <div data-page-node-id="kM93e9chUpbA1QIG46DvEk" id="weak-list"></div>
+      <button data-page-node-id="atTwJtBOeHLCcBUaDD4pq1" class="btn ghost" onclick="openExp('all')"><!--pnid:v4QjDZdSUOuEhGarCOtYhJ-->导出全部错题（纸质版）</button>
+    </div>
+
+    <!--pnid:aXFSfLBEx8hEiWhSiNdMf7--><!-- ================= 知识点详情（二级页） ================= -->
+    <div data-page-node-id="wHGZWPDWXFP3OlkiStRcIN" class="page" id="p-kp">
+      <div data-page-node-id="TnKABTK2d65aT7T1oCu8Hx" class="back" onclick="go('p-book')"><!--pnid:ZnNipkJ4FuEoyTCkDvo0Xm-->‹ 薄弱项</div>
+      <div data-page-node-id="VUv6agL17Jfdh6CAOEh2LQ" id="kp-body"></div>
+    </div>
+
+    <!--pnid:bts5WJrCZcY0II3bdpeUnS--><!-- ================= 今日练习（默认直接进入答题） ================= -->
+    <div data-page-node-id="e4RMRYqJKXM4uC1jtk6s77" class="page" id="p-practice">
+      <!--pnid:OBYdtHsIsHmry07ONW0vEg--><!-- 态 1：答题 -->
+      <div data-page-node-id="tBDm81XiLMd4YZXgLihfAp" id="st-quiz">
+        <div data-page-node-id="uZOB2nYlEbnNv19wxbdegy" class="sticky-note"><!--pnid:AJtOwgLWX02IO0Ru6zoTUb-->
+          第 <b data-page-node-id="xE0dtiz06WYdySNbBBejN9" id="q-idx"><!--pnid:f0ZpK9j9LJG7dNRh26IJ37-->1</b><!--pnid:bGsfST0dGefPaskUxMFCSN--> / <span data-page-node-id="Og0nbr112rpVXdO4DP4J36" id="q-total"><!--pnid:IivFTrS5yTshplbmlyzKpe-->10</span><!--pnid:ICwbAr5ZludXNjGT8tvXIE--> 题
+        </div>
+        <div data-page-node-id="Abb9NOCBzsZZpCr7nxRem1" class="hd" id="q-text" style="font-size:17px; line-height:1.6; text-align:center"></div>
+        <div data-page-node-id="FiVCxGSqEdWeKIziPLKQK0" class="q-tag" id="q-tag" style="display:none"><!--pnid:9Yt2VbKzQmRwLdNpXhCe4S-->应用题</div>
+        <div data-page-node-id="ET71xnBksE5bi1rZqKAVLf" id="q-opts"></div>
+        <div data-page-node-id="QXjG4LmnkWaD1UXz4qPxJK" id="q-input">
+          <input data-page-node-id="yTIq4dUqUzMdCH3HuJ1nVp" class="inp" id="q-in" placeholder="输入答案，多个用逗号分隔">
+        </div>
+        <div data-page-node-id="tUyU8wnm8Jd9jWiAys6hfo" id="q-fb"></div>
+        <button data-page-node-id="Mfe4aLTkmBkfKgPRFxUTY2" class="btn" id="q-btn" onclick="nextQ()"><!--pnid:j9bLpebeamzwTHoh6QVVTP-->提交</button>
+      </div>
+
+      <!--pnid:Go3xpSo5Y4evlhwICPBqbL--><!-- 态 2：反馈 -->
+      <div data-page-node-id="XJWopThDXMmiCzxdNoQC34" id="st-res" style="display:none">
+        <div data-page-node-id="80jA4WJMHDkRFylAI6tYQG" class="hd"><!--pnid:enz3XtPA4d1Vl2V8g3D7YH-->本轮完成</div>
+        <div data-page-node-id="IARclxUDLpJV5542Gjl7vr" class="sub" id="res-sub"><!--pnid:RFlxZusk4jcjaVq5AiEd7q-->10 题 · 用时 6 分 40 秒</div>
+        <div data-page-node-id="2oQX1WRF8bLxkZXjhOHWnc" class="card">
+          <div data-page-node-id="lvHmSzokVQhf4kxuD4ZEnd" class="t-l"><!--pnid:JS3cyKJN6MkI4F68VDEYPL-->本轮结果（按难度档）</div>
+          <table data-page-node-id="iS4o28hj13N95sRGkwm5XG" class="mini">
+            <tr data-page-node-id="ZmHO7lkG1AN2DlQzr6APiy"><th data-page-node-id="zIMrhhGTi4yxicONJ75D4f"><!--pnid:etvmdoTCSmUuHv8YheNNEn-->难度档</th><th data-page-node-id="xW4mxiDz6FoLLEqLTSzGpi"><!--pnid:VPYMRcSumR65ZMDs8346rJ-->本轮</th><th data-page-node-id="qCK6mE89Evf5HsqZLXOSyK"><!--pnid:NoEL1pwHp4C5dQhYwdbVv8-->正确率</th></tr>
+            <tr data-page-node-id="yAljQrilgyX420KRCQOkXd"><td data-page-node-id="YZiQjNuLkoR0SjA9BQdlmR"><!--pnid:gizYHkEY51u8cLYzW94LHg-->简单</td><td data-page-node-id="5vDNoa1E2HxKRkRLJwbW3B"><!--pnid:KJkgTvD7bx4m64TA0Rmk0E-->3/3</td><td data-page-node-id="zc2J3wRIEszZV34NO1zV9W"><span data-page-node-id="42ImKv9CjBUxbTirYfZLVX" class="delta up"><!--pnid:7uNiE26eoRfqBgt4mk3aHF-->1.00</span></td></tr>
+            <tr data-page-node-id="MKxtnqbEvvXom62IH4IWOT"><td data-page-node-id="gbsCs5aEfgtQ0OnSUsScXG"><!--pnid:fMp3AnSBh0mHG0m0yp3QjJ-->中等</td><td data-page-node-id="OglomO9gPWe1LuyoEToZg6"><!--pnid:U9dGDyrVmS9jmlfpf9GviE-->4/5</td><td data-page-node-id="Brj8HioR9qPsXpRVhujYXB"><span data-page-node-id="WCrm0vbLaSn09zSBoAEM0u" class="delta up"><!--pnid:TxVQfZrX1BeWJe0iJnZNf4-->0.80</span></td></tr>
+            <tr data-page-node-id="99w5IuPtScaQVpu6uHryN2"><td data-page-node-id="B04uMEnjFyaFobRcw7b83l"><!--pnid:MsMr7gEoqvLcVi4sjnduUm-->困难</td><td data-page-node-id="Lv0am8yKNZCtmufddfwVw8"><!--pnid:RBuDWGgJqH0vjfRMC5mBsx-->1/2</td><td data-page-node-id="RxU2JJfeg3BQIj6HLHHtIB"><span data-page-node-id="tmCSzueN7UPFHdRR8zqIbj" class="delta fl"><!--pnid:BJ2Zy1cn6nxc5sC08uukaL-->0.50</span></td></tr>
+          </table>
+        </div>
+        <div data-page-node-id="Vv3xzn4eCEkVGesAe9gGyM" class="card">
+          <div data-page-node-id="bINyQiDahpObJ7p5ZjiLSV" class="t-l"><!--pnid:eScn8lTfRF7MOgKTSxDtJf-->错题回顾</div>
+          <div data-page-node-id="x0NRF5Zt0aySWNZrz2wDCc" class="res-hd"><span data-page-node-id="7ZDsZZs82PU78Df3ElGKEs" class="dot n"></span><b data-page-node-id="hIKZUII4YGsPzJuwbh3L0B"><!--pnid:0xfRQPqwhmlOa11WjIJ5tg-->第 9 题</b><!--pnid:ZE0QA8twBlwRyzkf999yD6--> · 抛硬币 3 次恰好 2 次正面的概率</div>
+          <div data-page-node-id="tCsUT6FJaNzB7rpkm1TUYP" class="wrong"><!--pnid:TeqAxkLVtAksgv0mZQnAKo-->你的答案 1/2 &nbsp;·&nbsp; 正确答案 3/8<br data-page-node-id="kyMH7GrmyrlfCYrzJXW4jE"><!--pnid:7gcH4Upf9XGRsTGc0DW4XE-->
+            3 次中恰好 2 次正面有 3 种：正正反、正反正、反正正，共 8 种等可能结果。</div>
+          <div data-page-node-id="xLa2bxljcUlKR7O0JArNTn" class="why"><!--pnid:EBJS0vwiFu77qrgvRnaZBn-->已记入错误机制「概率模型构建不全」，下一轮会加推同类题</div>
+        </div>
+        <div data-page-node-id="BnJOAqHGqDDX1etEgIH6LD" class="card">
+          <div data-page-node-id="sZPfT9olp7JJK5G4xp0FKI" class="t-l"><!--pnid:uCzPPobjfqKt45bqd0iA7V-->下一步</div>
+          <div data-page-node-id="JYgJIWXzEyvH9kxeUlGmNm" class="mastery-now"><!--pnid:bc87BnrSggkNBUISj6OWPi-->下一轮按掌握度混合出题：<b data-page-node-id="I0b5AkPyCwZ2S2jIVHp8PP"><!--pnid:zUuAJXUrwYYEe5wEfz5hjt-->一元二次方程 · 因式分解 · 分式化简</b><!--pnid:Vl8H2Scx5T5Raz8QQz69DU-->；<br data-page-node-id="nA90NNf7eQ6pQG2zfB1ezq"><!--pnid:g8bAm4AxWUwZYGJV4MDNub-->
+            「勾股定理」近 3 次全对，出题占比已下调。</div>
+        </div>
+        <button data-page-node-id="aZlah3Kp2F3DcejKTWVfBW" class="btn" onclick="openExp('')"><!--pnid:oEgD7qwbd43Qii5WyDMbAY-->导出本轮 PDF（纸质版）</button>
+        <button data-page-node-id="y4QtDH2UE9TKHX21UcVNDp" class="btn ghost" onclick="go('p-report')"><!--pnid:gHLnck9IawH8ENTIlAishZ-->看学习报告</button>
+        <button data-page-node-id="CjdbAt1UrcodkCIU5OUN8X" class="btn ghost" onclick="enterPractice()"><!--pnid:azaRJKpHmHyPHvVbEwHjUy-->再来一轮</button>
+      </div>
+    </div>
+
+    <!--pnid:BmZqCCZ21osu8CkFeC0xdD--><!-- ================= 报告 ================= -->
+    <div data-page-node-id="JjAORN86emz2Vtq7uIhu79" class="page" id="p-report">
+      <div data-page-node-id="LjEG3pO9eR4bIW5BBusuEX" class="hd" id="rpt-hd"><!--pnid:vuL3bEf3UGthxuf5UFw3PJ-->学习报告</div>
+
+      <div data-page-node-id="uPqlvmAeLdbeJzemexAgCz" class="card">
+        <div data-page-node-id="aP5MU2qV8a43CA2FK1PDpG" class="t-l"><!--pnid:K0fRJ98KCHJDFjKr6dvEMV-->正确率 <span data-page-node-id="SGXlE6wedpHHMfQFamALfy" class="more"><!--pnid:8AtBMoCvdfQ6LLLm5v0Cb7-->本月</span></div>
+        <div data-page-node-id="SyEbzDYzNG27mCmNWO7Mxl" class="arow"><span data-page-node-id="OKxqFZpaOovB6GEK12jcYq" class="nm"><!--pnid:F5WQflaRzSHIs2bpiGlPdf-->简单</span>
+          <span data-page-node-id="mmNbUnOtcqS42zfhajDifs" class="num"><!--pnid:o9EUSfkw0L0A3JpOHRrOfo-->0.88<span data-page-node-id="w8QimjTmyEbomveFjKeZPO" class="dlt up"><!--pnid:lcx4xUKCOg7pJKo51xvBah-->+0.13</span></span>
+          <span data-page-node-id="XiZ12nPYVn280Qms6TmmQV" class="tracks"><span data-page-node-id="yefjNw2uJa16p4Z491WqpO" class="trow"><i data-page-node-id="2Lprt0nUu515hnipHTraIZ" class="tl"><!--pnid:shLGdRBMW2V8j4uduqWZtE-->本月</i><span data-page-node-id="wOzxpbeYGZEnZ1HlmEkQTo" class="track"><span data-page-node-id="HIL4PovIoKRbZEadlhj3Ji" class="fill cur" style="width:88%"></span></span></span><span data-page-node-id="WtHJzW5mAFwHLrDZRJuAu4" class="trow"><i data-page-node-id="RMHJnCqD3JFQZ3aQDZenSQ" class="tl"><!--pnid:m3fzVO1oTIm8jCvLYjn9FG-->上月</i><span data-page-node-id="Qu4HM7x8ln1608iEB1NYuD" class="track"><span data-page-node-id="om7gKPmPR0CSgAAOdjp2lG" class="fill prev" style="width:75%"></span></span></span></span></div>
+        <div data-page-node-id="ciLcZo00U698Fk3eDM7UbP" class="arow"><span data-page-node-id="vuZa5g3nkyDIHexHsUYLsE" class="nm"><!--pnid:hxydR8DJhWIIzOcFNpFNJj-->中等</span>
+          <span data-page-node-id="pJUezefbh54TLgRCcPaLk8" class="num"><!--pnid:HebQiZCm6QgWU3Azk1KCSF-->0.71<span data-page-node-id="QsLnODCna26IdUKyvITN7M" class="dlt up"><!--pnid:vGn345Ywt75OjlSd6TgPSf-->+0.16</span></span>
+          <span data-page-node-id="quJsltI08TNTjVogoo1vWN" class="tracks"><span data-page-node-id="KDgKcan7DtpOrcqsxvgaJe" class="trow"><i data-page-node-id="mjFmRIzoNXxaKmdIow0Yhe" class="tl"><!--pnid:jEzZHwDXkJRERGy1VeSGlT-->本月</i><span data-page-node-id="mql1SRSZey2Jqn1ID85dB8" class="track"><span data-page-node-id="D7tQh0M4Znfk2pM1MD2UFK" class="fill cur" style="width:71%"></span></span></span><span data-page-node-id="dqFhVIN0eB98aBfUfI7gs6" class="trow"><i data-page-node-id="4H9SslWa0wNc3VyupiBKXA" class="tl"><!--pnid:iiOaFYnLZYFpGLRXoCyqTY-->上月</i><span data-page-node-id="SvJznhHyt10xms7q5Yb8q5" class="track"><span data-page-node-id="kfBIzdApHo4Zl5Tbi2vUHV" class="fill prev" style="width:55%"></span></span></span></span></div>
+        <div data-page-node-id="R4aYOIcSNO2lPjfJnKCWcH" class="arow"><span data-page-node-id="sO58E9E2XKL6GKvdk1Kips" class="nm"><!--pnid:RnZfWwq5Gg2S2z4EjKBJIE-->困难</span>
+          <span data-page-node-id="zSC5J1fEwPbCBFMaasPdpt" class="num"><!--pnid:nlR3ibmoGHUmS3d0qrel7j-->0.44<span data-page-node-id="xJ4wv5TF1WRg5EyXaKzpeG" class="dlt up"><!--pnid:jOMjq001BvHJSnltw23NGY-->+0.22</span></span>
+          <span data-page-node-id="PI7PalRDohrUqCNpMl8U84" class="tracks"><span data-page-node-id="OMS0idfgCwOQVhaIMdIz2r" class="trow"><i data-page-node-id="UCag9QH4sQ9z5pLWxAtaJs" class="tl"><!--pnid:PGoprqIwQQudesTe1txRYR-->本月</i><span data-page-node-id="8pJKvHooRc5ZycLpP7yIwr" class="track"><span data-page-node-id="ROfRTmMFQqsztKaLeBKaw7" class="fill cur" style="width:44%"></span></span></span><span data-page-node-id="5DgbzDFydoah31Khs6EYFA" class="trow"><i data-page-node-id="KpwWYq9zcItOk06uibRW3i" class="tl"><!--pnid:CljOIIuwSxXDenGdO0XLa5-->上月</i><span data-page-node-id="n9TzE8zqJBkNM0ed4IKp1B" class="track"><span data-page-node-id="ez2tN7bq4E8962xZSA7LPF" class="fill prev" style="width:22%"></span></span></span></span></div>
+        <div data-page-node-id="sG3mPe7sC2SgswHFt8kYVo" class="arow all"><span data-page-node-id="INad3zI8zkBin9DfhXj2Wv" class="nm"><!--pnid:wNH399q1ASl6u0Nbo8VxYG-->全部</span>
+          <span data-page-node-id="nuRxw3OlmLztGNlifC4wgv" class="num"><!--pnid:TjCIktIhHqAs6Z84TXJRzq-->0.68<span data-page-node-id="vOp5YQAxvE3mXKm1hEOttr" class="dlt up"><!--pnid:NKQDExCoGSmT96nH8vFF9i-->+0.17</span></span>
+          <span data-page-node-id="GwM1q4FezoXHqh1nvmz0Sc" class="tracks"><span data-page-node-id="bN2lGK3f0fvGj73endufQa" class="trow"><i data-page-node-id="SppuKKJQrx4MiWaHpDL63I" class="tl"><!--pnid:FTs19EZ2bCAYTl6DkgSpw0-->本月</i><span data-page-node-id="zuoXNjLtBHzOQwQZfRHtEW" class="track"><span data-page-node-id="nZRfTs5TMFD7VYZR2VZpNs" class="fill cur" style="width:68%"></span></span></span><span data-page-node-id="8IUQ0lsqrrepNBhgkwHPd1" class="trow"><i data-page-node-id="o6T7clM4PYDf5qTQQHxGo1" class="tl"><!--pnid:L6WPl7sGzVXTtoasVYGTqf-->上月</i><span data-page-node-id="DC4wk2DgOoxgQLcOVAY78y" class="track"><span data-page-node-id="U4amm5GMzO81cl0nLJIeKK" class="fill prev" style="width:51%"></span></span></span></span></div>
+      </div>
+
+      <div data-page-node-id="8ZoNk9YQN4fJ9AKZzGIAK1" class="card">
+        <div data-page-node-id="u24So0ncjzaK8nL1iUB92V" class="t-l"><!--pnid:KR4FLN0I1ZrbVw8W8ei6Py-->各知识点进展</div>
+        <div data-page-node-id="wKxkeRWPc41Or9MKwuKF1l" class="kp-row" onclick="openKpFromReport('勾股定理')">
+          <div data-page-node-id="KciO0e693VvLUjDfYAYQ7x" class="kp-hd"><span data-page-node-id="gJnHo1MZZdbaI4xKDn2dLj" class="kp-nm"><!--pnid:BAYRbhKGSfUuiNia4UGFBM-->勾股定理</span><span data-page-node-id="NEjOM6K4JpihUBxuGvmH3x" class="kp-pct"><!--pnid:NEDC7mJgA6hbemNWlCfuq1-->100%</span></div>
+          <div data-page-node-id="oxHIxbdd62wJYHmwKcuIaF" class="kp-bar"><i data-page-node-id="LbGoSxRzWt6UQd6ceizdRB" class="lv3" style="width:100%"></i></div>
+          <div data-page-node-id="qcBm86FefGheRUJvcSyFae" class="kp-ft"><span data-page-node-id="R4ihDjrTtFum0plWYwNsfS" class="kp-lv lv3-t"><!--pnid:FJFSrlludUug7qSE1Ufqyq-->渐入佳境</span></div>
+        </div>
+        <div data-page-node-id="xJirBTdzKqUMCqDmIM3wft" class="kp-row" onclick="openKpFromReport('一元二次方程')">
+          <div data-page-node-id="9YQMZonPoPurtCIhTca3ga" class="kp-hd"><span data-page-node-id="QtxJugjbNvEYJsOyPKJRVA" class="kp-nm"><!--pnid:8SvZ3rnX1LCI77gODJ1w0C-->一元二次方程</span><span data-page-node-id="lJEQJ3vD1nLxWGNrNvF67d" class="kp-pct"><!--pnid:8Qdj8QCxxiIG1feAyuPzuB-->71%</span></div>
+          <div data-page-node-id="2tsxkUtgEEUiISZ0eQxMaQ" class="kp-bar"><i data-page-node-id="YperYDRKAkP42wWfJ5mSXN" class="lv3" style="width:71%"></i></div>
+          <div data-page-node-id="cfXGsFUfP8fmoyHLreLx34" class="kp-ft"><span data-page-node-id="9GzFmyVUKMxdYmTeO6itW8" class="kp-lv lv3-t"><!--pnid:7dzKf6aoXoIMqfFdPawtUU-->渐入佳境</span></div>
+        </div>
+        <div data-page-node-id="GU9zJIHRuS54HG5a45krrF" class="kp-row" onclick="openKpFromReport('分式化简')">
+          <div data-page-node-id="NS45qWghW6cuQ6eXbpQB6f" class="kp-hd"><span data-page-node-id="KVc7o5LyEKHRVeg7ZCn7Va" class="kp-nm"><!--pnid:CI4ZkotUg9oyQpIxkC8tqF-->分式化简</span><span data-page-node-id="28FPqE7jtqpmY79ZtPYNNu" class="kp-pct"><!--pnid:vljTYSuWu4XH3TM4XVj7ON-->60%</span></div>
+          <div data-page-node-id="Ds5wBnHSnfGF8H1Cz9jImN" class="kp-bar"><i data-page-node-id="4OcoKOeOzeu1j0uOzcBOCN" class="lv2" style="width:60%"></i></div>
+          <div data-page-node-id="CSjSHZyG0AyFXnGDpFzADq" class="kp-ft"><span data-page-node-id="x23OuGABwbNcb3gJReEUks" class="kp-lv lv2-t"><!--pnid:thrlgVmN6gTC6HyShGZZHg-->开始熟练</span></div>
+        </div>
+        <div data-page-node-id="SKOLiIz5vFucAznV3e11AC" class="kp-row" onclick="openKpFromReport('概率初步')">
+          <div data-page-node-id="DcJoA53DJlv65a3pMUy5pr" class="kp-hd"><span data-page-node-id="60rfRTzeNrMIqIN0XEkSq9" class="kp-nm"><!--pnid:N5xuPouyYiI4PsPpnKM0QO-->概率初步</span><span data-page-node-id="16nYWvwjyFsfP76oWkzh70" class="kp-pct"><!--pnid:RvIR7La4f6LjtHvYiT2pqU-->60%</span></div>
+          <div data-page-node-id="DoeWmLZZPnm3FPj1Afa0Id" class="kp-bar"><i data-page-node-id="yTvBcr4aOsW893ejmEuYzb" class="lv2" style="width:60%"></i></div>
+          <div data-page-node-id="etQ06nB4MiXxT4pTwLcPQA" class="kp-ft"><span data-page-node-id="NmfiWO1SREgKU2M33rppbx" class="kp-lv lv2-t"><!--pnid:C0tHmYWRRh4H0IlTuQitN0-->开始熟练</span></div>
+        </div>
+        <div data-page-node-id="LCaO7nc8CxrRFkEXCAVpSi" class="kp-row" onclick="openKpFromReport('因式分解')">
+          <div data-page-node-id="9cnJdCU2uw2WnlM0d7HMKU" class="kp-hd"><span data-page-node-id="PWVvJAMajkk35JoCOF7y95" class="kp-nm"><!--pnid:LxKSlQAaKhkIwyZSo0SG1s-->因式分解</span><span data-page-node-id="RgdVzoSxEal2ihkzdQReNQ" class="kp-pct"><!--pnid:g931Baie8Z3MYF49kK0Wll-->58%</span></div>
+          <div data-page-node-id="LXfpbnmNISGzKVV4M0NRkw" class="kp-bar"><i data-page-node-id="lg5cjiUNMgNbhMoX6FWVwh" class="lv2" style="width:58%"></i></div>
+          <div data-page-node-id="qtIPBdb76rkeJcdzj2CFQT" class="kp-ft"><span data-page-node-id="z1Nbfg6lepTyVbpuyCDEPU" class="kp-lv lv2-t"><!--pnid:FEEHo2NL2EXYYKcYRsCD4w-->开始熟练</span></div>
+        </div>
+        <div data-page-node-id="dOkVqbUzb1QPzXQbZlMYEj" class="kp-row" onclick="openKpFromReport('二次函数图像')">
+          <div data-page-node-id="wkL6QlWAs6bmNFrmWEIiCU" class="kp-hd"><span data-page-node-id="q4L5oUnJzkgz3EsnfS2TOi" class="kp-nm"><!--pnid:Jw8qkBQULPXGAbcZ1znHw4-->二次函数图像</span><span data-page-node-id="Edf4KS0CnaDJAETFjeUJMi" class="kp-pct"><!--pnid:qVyg8C5xL51umMhE5OjQjR-->50%</span></div>
+          <div data-page-node-id="zsR6llPqWZmNSDHNbBND0w" class="kp-bar"><i data-page-node-id="SrIfInsIArBKoW0N0L2mkH" class="lv2" style="width:50%"></i></div>
+          <div data-page-node-id="0Hw6s0fDcV0V5CTwE9y3Am" class="kp-ft"><span data-page-node-id="SKAeoqVr1JH9BkvzOQ9cCs" class="kp-lv lv2-t"><!--pnid:G62sVTvdcFViG9IZk6QJ69-->开始熟练</span></div>
+        </div>
+        <div data-page-node-id="O1MRg6kjcafBvgiH8lg3nx" class="kp-row" onclick="openKpFromReport('全等三角形')">
+          <div data-page-node-id="SOU58t4ZDtooDLxkJ0gr8z" class="kp-hd"><span data-page-node-id="cwsQKOyYjtCsv1DwTdegMT" class="kp-nm"><!--pnid:O5Zu4NuNcTtnVhsWl8yaeC-->全等三角形</span><span data-page-node-id="QFkCiXGOnPA89YtxK2pN0k" class="kp-pct"><!--pnid:SBZLdUVsB1zOdmxsLJAa7L-->30%</span></div>
+          <div data-page-node-id="Wu7umNHeQojIy4KAPtm3Hr" class="kp-bar"><i data-page-node-id="C671Mg5JYbt2oXh8OFlcnr" class="lv1" style="width:30%"></i></div>
+          <div data-page-node-id="yFVbKer3lHJvvUrG2tW9KC" class="kp-ft"><span data-page-node-id="iCp5C1PDMlPCq0yUcvFp3o" class="kp-lv lv1-t"><!--pnid:dhuHpUGvEZcUW1hqXmtnht-->尚未掌握</span></div>
+        </div>
+              </div>
+
+      <div data-page-node-id="LKQPtxUVCuCXm67UFrdp63" class="card">
+        <div data-page-node-id="cnbREuWgpA2C6ZrsUsATGz" class="t-l"><!--pnid:kWvjNHKYRTa5qiygJIYpn0-->错误机制复发率 <span data-page-node-id="jtsqAAZsvYvTyrJSVTYLxd" class="more"><!--pnid:CD1BlH9G49LfguTrDXw2hV-->近 100 次</span></div>
+        <div data-page-node-id="Cvyn9QTNUJa4IrwKFtJ2YC" class="row"><span data-page-node-id="D8ZpqRN5sVN9EasXXNkN9B"><!--pnid:hGUPAB67Q98oxP7whJ2fzt-->漏解</span><b data-page-node-id="5rpdeiEL0jisOFF6WONakK"><!--pnid:3lhA30Fx2irNPtQVRxPszm-->20 次（20%）</b></div>
+        <div data-page-node-id="rQHSNdyo3S9o5G7g5XxXHi" class="row"><span data-page-node-id="VPGnIAvkBD3891yHbBjYNR"><!--pnid:4eTyJwiaolrKf0hxQmFp4f-->分解不彻底</span><b data-page-node-id="8vsLg4kvWNM7Ztsv8anaMo"><!--pnid:jIbVARjpaT3TJEho0rYbSJ-->13 次（13%）</b></div>
+        <div data-page-node-id="O2SDomrV4FYLkaQYuouJTH" class="row"><span data-page-node-id="e3tGFFP8bEgeozHcKMbUGa"><!--pnid:ONtNjltNmPc5kfDO6a2FKp-->漏条件</span><b data-page-node-id="GxkeY0YWGteUpPF5Yqy2we"><!--pnid:vyxbwinZlK2ZoslXi7HIJN-->10 次（10%）</b></div>
+        <div data-page-node-id="QmAm7FrvugVVNfdTW2GRgc" class="row"><span data-page-node-id="vyuH2PV3mgCH0TK8VALFMP"><!--pnid:YxEHkWplGcBl472hIzUtSi-->计算失误</span><b data-page-node-id="IK1eXsrt9p3714JHgs7Jbp"><!--pnid:Z3X4bO7Os4uJYQYQTNJxuB-->7 次（7%）</b></div>
+      </div>
+
+      <div data-page-node-id="bff7wpOabRI6XtsWtnZw1S" class="card">
+        <div data-page-node-id="f80CHWaAeQecdqdn1EzJAG" class="t-l"><!--pnid:gcqTusScMUSNPJHJY65lvM-->练习量</div>
+        <div data-page-node-id="WFzpA29EpFoPsGoeJXp2zU" class="row"><span data-page-node-id="HPSCMpOZDqtbZ3jdmPNWn0"><!--pnid:1RYvNhlGqRv2p1LiWrrTum-->累计作答</span><b data-page-node-id="mkk8kBhRCUrXaOrHWRZSH5"><!--pnid:H8cnqKTDu7yQGmpZAbBkLJ-->142 次</b></div>
+        <div data-page-node-id="4hhKnE05bhsVkrscsqpi0U" class="row"><span data-page-node-id="0od5YlF66PyO1c6zW1cP0R"><!--pnid:hhBdffgDeQFC2Akj5F7Cqx-->已练习知识点</span><b data-page-node-id="cT38NYSWwQpYxHtqI0IlsR"><!--pnid:WOFzIODcGYlCHYBfLxMgzu-->12 个</b></div>
+        <div data-page-node-id="7TdbouVuzlb2a9u9qxou2u" class="row"><span data-page-node-id="vN51tOSQ4q1pcCX0DcRqcc"><!--pnid:jNFDRiO0el75qrwQUsJejB-->累计错题</span><b data-page-node-id="1Go1DL7oyplcDI14Dz5v7Q"><!--pnid:XEpxy4LEJ52MWue2O2KfiF-->17 条</b></div>
+      </div>
+
+      <div data-page-node-id="8iSZfRfgJI9gFQ2zyePdfu" class="card">
+        <div data-page-node-id="anLAcMRuLigh2KtrIYAqve" class="t-l"><!--pnid:NETooFz9ubnlYKF1MCpPgI-->成就 <span data-page-node-id="m65N3dS27wOW10CviGIbbB" class="more" onclick="go('p-ach')"><!--pnid:IpuZWAYU7G8YyosrEqc8Ea-->查看全部 8 条 ›</span></div>
+        <div data-page-node-id="j6GBHSjj4FAVJLugmOpEQA" class="ach-row" onclick="go('p-ach')">
+          <div data-page-node-id="kDBfps8SQ57bHGz2qS39Ue" class="ach-rs"><!--pnid:wIbYOMvCVso3HwYwKoJWDd-->5d</div>
+          <div data-page-node-id="DhuY8BItzCADl76jrpvb0K" class="ach-rn"><!--pnid:0u44U90TfS4fP1pbnC8yGT-->连续 5 天练习</div>
+          <div data-page-node-id="nWYwMDkgGV47G9A44m39kY" class="ach-rd"><!--pnid:wxO6wBQlKhki1D98UHennp-->10-30</div>
+        </div>
+        <div data-page-node-id="WvOaM8uY5DT3s0E1lh3smX" class="ach-row" onclick="go('p-ach')">
+          <div data-page-node-id="ZoBIuMNI91DS5ZMK7nnYS6" class="ach-rs"><!--pnid:Fu9RndwEGOxDwWevoiMb3Q-->82%</div>
+          <div data-page-node-id="wHaGwdC33DYyxxwfVfjgAz" class="ach-rn"><!--pnid:GYmQ3v9CxAWdxI6UMRLAAu-->近 30 题正确率 82%</div>
+          <div data-page-node-id="lLaXCg0IEy2kSJeDbGYMHg" class="ach-rd"><!--pnid:hmgcQKgl08ROmlz7JAv4Wn-->10-30</div>
+        </div>
+        <div data-page-node-id="qixPsY8dvcp7OFc7f40aME" class="ach-row" onclick="go('p-ach')">
+          <div data-page-node-id="h3i31caBTSMPyIFW4D4sDn" class="ach-rs"><!--pnid:yBpBthsNqaFbNTzc3gtJr5-->2</div>
+          <div data-page-node-id="oMnNY80m45oj66mJYOC7YF" class="ach-rn"><!--pnid:nwcKcxY7r7TfVOIFgRfV7m-->2 个知识点渐入佳境</div>
+          <div data-page-node-id="6Usobe7ITuVDEvDK3yZW8x" class="ach-rd"><!--pnid:AmiHB6Xh21p0uQ0w6mnDRG-->10-29</div>
+        </div>
+      </div>
+    </div>
+
+  
+    <div data-page-node-id="1NV1q4Df6gGkoKcJnK730j" class="page" id="p-ach">
+      <div data-page-node-id="D2UIsCiAjxQ7BoyKgZkr56" class="back" onclick="go('p-report')"><!--pnid:RjecVMABS249s1LaxC85e8-->‹ 学习报告</div>
+      <div data-page-node-id="25SLB18mULGWCJoMoLIEj0" class="hd"><!--pnid:vIO8ComB3qvTa7FkdziE3s-->成就</div>
+      <div data-page-node-id="5XuXV1udMszKjb9asXyfHG" class="sub"><!--pnid:g9kQ245tnhbQdIoNcBwqmX-->12 条里程碑 · 已达成 8 条 · 进行中 3 条</div>
+
+
+      <div data-page-node-id="WhNrrHdZBI96g55Z4pQUh1" class="ach-chips" id="ach-chips">
+        <div data-page-node-id="ehqsfUzVUgW74j1FrmKb8O" class="ach-chip on" onclick="achFilter(this,'all')"><!--pnid:Ree8Yoj0dYHchRFFrGSCsb-->全部 8</div>
+        <div data-page-node-id="jXIuhMgsBRWKGgb0TnZJTi" class="ach-chip" onclick="achFilter(this,'streak')"><!--pnid:tJaKmJgFtNzf5Sp5Sqds8B-->坚持 3</div>
+        <div data-page-node-id="lV1TZxIuydL7GqskIKLveU" class="ach-chip" onclick="achFilter(this,'acc')"><!--pnid:kA7AXz44DwJ8TdSc52aPHM-->正确率 3</div>
+        <div data-page-node-id="7ZHx1PMDdhUYLSVwsBoqjv" class="ach-chip" onclick="achFilter(this,'mastery')"><!--pnid:QU0A5bPv8aMgHFFEVXXkLa-->熟练 1</div>
+        <div data-page-node-id="9N8l1CIPMiNiKuRoxPwtGP" class="ach-chip" onclick="achFilter(this,'clean')"><!--pnid:lQuTqFks4UaXbSdKxgoPHN-->清理 1</div>
+      </div>
+
+      <div data-page-node-id="Pw6lVyL9hJ8SnTCRBZMdou" id="ach-list"></div>
+
+      <div data-page-node-id="e3Qr4aNBMlkRd5gd0BXtvL" class="ach-sec" id="ach-doing-t"><!--pnid:XIrndqXpMgDgg4n2sGdHlu-->进行中 </div>
+      <div data-page-node-id="DHMK44LrEqUoc0TbyhyKGX" id="ach-doing"></div>
+
+      <div data-page-node-id="yw02sa7h1zt94SqGSFtGfg" class="ach-empty" id="ach-empty"><!--pnid:vMOaunYYguHuylfWMKWZTH-->另有 1 条未开始，不提前展示<br data-page-node-id="EXnXcTdrUQ54D2nsfHXT0c"><!--pnid:Zj1aUzIptBPu1c97H7aUuV-->（避免为了点亮而刷题）</div>
+
+      <div data-page-node-id="1fnEOvqj3cu1ui7Ztncqvp" class="ach-rules">
+        <h4 data-page-node-id="mUFPXZsJtBXKoVD9X2nLqf"><!--pnid:8OJtizWDvaSpfyDlrCcKnN-->这个系统不做什么</h4>
+        <ul data-page-node-id="nEPKB8taM4f070LgDr0HEX">
+          <li data-page-node-id="1ojPYVXfs1hEYBMpeHzAfl"><b data-page-node-id="Q0c1Fu78h3HwnJBaJms7CX"><!--pnid:ASKu5aHMGFD0pS7Q68GUa3-->没有总分、没有排行榜、没有签到。</b><!--pnid:qc6ME0SIkrY94ndlT6v3d7-->分数会诱导刷简单题，而刷简单题对这个产品没有意义。</li>
+          <li data-page-node-id="VNrkOI4lrrs8t2bQb8A3V9"><b data-page-node-id="DGEQ871k7LdglcPFQKwGSY"><!--pnid:qn2DcQgk1zTXwCMH4iujMR-->没有灰色徽章墙。</b><!--pnid:Hv0qjhLh70VGBG4arZo49y-->未达成的不出现在列表里，避免「收集癖」替掉「补薄弱点」。</li>
+          <li data-page-node-id="1gfdWuV9z92d0MTl8xDQJ2"><b data-page-node-id="UNnMJHF1Yra8ezXmkcrSh7"><!--pnid:mYmTmxMrJeya4PVdjb8eKS-->成就只增不减。</b><!--pnid:BhgehyD6sDXiE7GerOBLew-->它是「你曾经做到过」的事实记录，当前水平一律以报告页为准。</li>
+          <li data-page-node-id="vBgLRZSvKMMcOE25B0gYVx"><b data-page-node-id="s2tUKjgJDy1vbJwYnFgZoE"><!--pnid:iKhvreNLOFvTtBHPXTqfMI-->不按题量发奖。</b><!--pnid:rGqMI6qYhMvvY9GNpITJiW-->做 100 道简单题不产生任何成就；连续练习天数、正确率、熟练知识点数达标才算。</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div data-page-node-id="yMNTJVm3yUfL0gwF7aEcaJ" class="mask" id="mask" onclick="closeSheet()"></div>
+
+
+  <!--pnid:lTKh5Orl85LCWMDUEnYQUe--><!-- 抽屉：导出配置 -->
+  <div data-page-node-id="xCAQ497n0uyTpPjfn68CpT" class="sheet" id="sk-exp">
+    <div data-page-node-id="OyD9gLyQ36jnLDigFUsjAC" class="sheet-hd"><!--pnid:qp6bqEUnHAHXb8SGj6scWf-->导出打印</div>
+    <div data-page-node-id="ZgpC6sV8zoIabWpC1hHz2j" class="sheet-sub" id="ex-sub"></div>
+    <div data-page-node-id="eQMcqejb8UmUrhOhdgVk6h" class="card">
+      <div data-page-node-id="kndBuHKZ9sWEukmZ0rRLmF" class="t-l"><!--pnid:1RnaYyt2KXR5mEtnT1e3bF-->范围</div>
+      <select data-page-node-id="ZI8VVLymHIt4iRdEqjwyV6" class="sel" id="ex-sel" onchange="onExp()">
+        <option data-page-node-id="ToNKvuA59OSiIckW3uM4Eb" value="quiz"><!--pnid:9murlKC2YJz2hA2rZdBP2J-->本轮练习</option>
+        <option data-page-node-id="1GvuhBNQLrl9AwFLq2OdET" value="r30"><!--pnid:VV4qpKP5Ya1MkYl5EfWHc0-->近 30 日错题</option>
+        <option data-page-node-id="FofreseckAnKbiZI7Mq8Zn" value="all"><!--pnid:ZKvG5q4lfnuHmVJPoWAtO9-->全部错题</option>
+        <option data-page-node-id="c7HSdRCDvGOHW02573HrO0" hidden id="opt-kp" value="kp"><!--pnid:N7JRVNgyV8ABjKDPyW2weh-->按知识点</option>
+      </select>
+      <div data-page-node-id="ZVeGWsSoZj4UY3xppB8k8g" class="row" style="padding-top:11px; border:0"><span data-page-node-id="81s26yYaexNYHAIGEqT53G"><!--pnid:D2DZPxHD8uvcYC4pWF91Ns-->共</span><b data-page-node-id="7zddNRvd60plmYUaFohGHp" id="ex-n"><!--pnid:ZbbzYxPc2vTfGj54s3sRnG-->10 题</b></div>
+    </div>
+    <div data-page-node-id="vtflvMlCvs455OtGemY9C4" class="card">
+      <div data-page-node-id="7AgsbOGedkquok7S5plIlE" class="t-l"><!--pnid:OpaT2ys2EXBbAoaH27zP0T-->排版</div>
+      <div data-page-node-id="Wja4dYeCMveMUchRk8137t" class="row" style="padding-top:0"><span data-page-node-id="D04OzujXJAT84RVmc4ASRw"><!--pnid:d1nD31vZsHHxxMmx8uxRKs-->题目后留答题空白</span><b data-page-node-id="YM1QXBmJRBm885OzZOziT5"><!--pnid:TR26hM7j7XWxHV0hHnpYxm-->已开启</b></div>
+      <div data-page-node-id="nijt9yKdsdyRqBvzi8FfD2" class="row"><span data-page-node-id="8Do6ZRYIgtn7QmuOhzG8FO"><!--pnid:jVVhEY7s8ZnW3nkf8WIKwQ-->末尾附答案</span><b data-page-node-id="vy3FFOqTUzaEBPCULGvs0Y"><!--pnid:1D678nuLMllwOVZWE51UUQ-->已开启</b></div>
+      <div data-page-node-id="F5c9OGhQJo3z8roIW3HOqc" class="row"><span data-page-node-id="kfnyWCFrELqrTzQgR2KVd8"><!--pnid:KfjlxHdtDNieHRKgipXsn2-->每页题量</span><b data-page-node-id="GamiQtLmIZgZN4e3Gn4Ww2"><!--pnid:N2cLHnlVmk9lkvlOxvQIob-->自动分页</b></div>
+    </div>
+    <button data-page-node-id="EsW1J6NCup1tOcRZQYCebm" class="btn" onclick="doExport()"><!--pnid:869rfUKubdV3AjDZQRfwBE-->生成打印页</button>
+    <button data-page-node-id="GskEv4qyu0Dh3CJA6MLeMj" class="btn ghost" onclick="closeSheet()"><!--pnid:exeHbFCTz2zjcWN0AiZWWJ-->关闭</button>
+  </div>
+
+  <div data-page-node-id="NcUvmuPIKkwsxjTotm2nnr" class="tabbar">
+    <div data-page-node-id="cuOPlugdoL1sAoSml3M1AI" class="tab active" onclick="go('p-home')"><div data-page-node-id="aZjV5EppTwUuQMcbR6ER0S" class="ic"><!--pnid:mVOnR9O7ZvQjAtVzcJ3av9-->🏠</div><!--pnid:iPtWzxFII3nhCE8GrMRDdP-->首页</div>
+    <div data-page-node-id="Wc8d4qpGz5rsN94Nbr6p98" class="tab" onclick="go('p-book')"><div data-page-node-id="8zLCQT7acHv0gEOxZi46Rp" class="ic"><!--pnid:O3V7XI64YPymkgPpVJrgf9-->📕</div><!--pnid:CMz9H21kfj2Xl501tUenuq-->错题本</div>
+        <div data-page-node-id="1VQmlJnhXrw1Tm8tIZUq6N" class="tab-fab" onclick="go('p-import')" title="导入试卷 / 作业"><svg data-page-node-id="RfjVYAKXwReYbssjYcgON2" fill="none" height="24" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="24"><path data-page-node-id="hxxjvpfgB1Xz45DbokVqwb" d="M4 7.5h2.6l1.3-2.2h8.2l1.3 2.2H20a1.2 1.2 0 0 1 1.2 1.2v9.1a1.2 1.2 0 0 1-1.2 1.2H4a1.2 1.2 0 0 1-1.2-1.2V8.7A1.2 1.2 0 0 1 4 7.5z"/><circle data-page-node-id="8cJOhOfdXLMuDPskRTuHvA" cx="12" cy="13.1" r="3.5"/></svg></div>
+    <div data-page-node-id="xxNnJb4UbpfWATHWnDaVWh" class="tab" onclick="enterPractice()"><div data-page-node-id="USZ8EgVJTALA2BjPdh8rXI" class="ic"><!--pnid:7CskHbZSjREyS23zh1g1k1-->✏️</div><!--pnid:zg7pvDPWXwysfSxu04Eeyx-->练习</div>
+    <div data-page-node-id="HRJMPsGB9APCGhdT723VY4" class="tab" onclick="go('p-report')"><div data-page-node-id="vGjuQsHRoC0lFPWUyKxRP5" class="ic"><!--pnid:djT10Ado1epvS44d0JYEbT-->📊</div><!--pnid:jIDuWiLKl4IKQwziIcFkvP-->报告</div>
+  </div>
+</div>
+
+<script data-page-node-id="hNy4AhNTHoneRxeOTCLR2e" data-pnid-children="H0f684bF6e6O8P6HbaihwV">
+/* 指向当前 scope 的别名；切换年级/科目时由 bindScope() 重新指向 */
+var WEAK = [], BANK = [], IMP = [], IMPORTS = [], HIST = [], ALL_WRONG = [];
+
+var BANK0 = [
+ {t:"解方程 x² − 7x + 12 = 0", a:"3 或 4", tier:2, kp:"一元二次方程", em:"漏解", type:"ch",
+  opts:["x = 3","x = 4","x = 3 或 x = 4","方程无解"], ai:2},
+ {t:"解方程 x² + x − 6 = 0", a:"2,-3", tier:2, kp:"一元二次方程", em:"漏解", type:"in"},
+ {t:"分解因式 3a² − 27", a:"3(a+3)(a-3)", tier:1, kp:"因式分解", em:"分解不彻底", type:"in"},
+ {t:"解方程 2x² − 8 = 0", a:"2,-2", tier:2, kp:"一元二次方程", em:"漏解", type:"in"},
+ {t:"化简 (x² − 9) / (x − 3)", a:"x + 3（x ≠ 3）", tier:2, kp:"分式化简", em:"漏条件", type:"ch",
+  opts:["x + 3","x − 3","x + 3（x ≠ 3）","x² − 9"], ai:2},
+ {t:"抛硬币 3 次，恰好 2 次正面的概率是", a:"3/8", tier:3, kp:"概率初步", em:"概率模型构建不全", type:"ch",
+  opts:["1/2","3/8","1/4","2/3"], ai:1},
+ {t:"分解因式 x² − 5x + 6", a:"(x−2)(x−3)", tier:1, kp:"因式分解", em:"分解不彻底", type:"ch",
+  opts:["(x−2)(x−3)","(x−1)(x−6)","(x+2)(x+3)","(x−5)(x+1)"], ai:0},
+ {t:"解方程 x² − 4 = 0", a:"2,-2", tier:1, kp:"一元二次方程", em:"漏解", type:"in"},
+ {t:"化简 (2x² − 8) / (x − 2)", a:"2x+4", tier:2, kp:"分式化简", em:"漏条件", type:"in"},
+ {t:"Rt△ 两直角边为 9、12，求斜边", a:"15", tier:3, kp:"勾股定理", em:"计算失误", type:"ch",
+  opts:["15","21","13","√63"], ai:0},
+
+ {t:"解方程 x² + 3x + 2 = 0", a:"-1,-2", tier:1, kp:"一元二次方程", em:"符号错误", type:"in"},
+ {t:"分解因式 a² − 9", a:"(a+3)(a-3)", tier:1, kp:"因式分解", em:"分解不彻底", type:"in"},
+ {t:"计算 (−2)³ + (−3)²", a:"1", tier:1, kp:"有理数运算", em:"符号错误", type:"ch",
+  opts:["1","−17","17","−1"], ai:0},
+ {t:"若 x / 2 = 3 / 4，求 x", a:"3/2", tier:1, kp:"比例", em:"计算失误", type:"in"},
+ {t:"化简 (x + 1)² − x²", a:"2x+1", tier:2, kp:"整式运算", em:"展开错误", type:"in"},
+ {t:"解方程 2x² + 5x − 3 = 0", a:"1/2,-3", tier:2, kp:"一元二次方程", em:"漏解", type:"in"},
+ {t:"抛物线 y = 2(x − 1)² + 3 的顶点坐标", a:"(1, 3)", tier:2, kp:"二次函数图像", em:"顶点坐标符号错误", type:"ch",
+  opts:["(1, 3)","(−1, 3)","(1, −3)","(2, 3)"], ai:0},
+ {t:"掷一枚骰子，点数大于 4 的概率", a:"1/3", tier:2, kp:"概率初步", em:"概率模型构建不全", type:"ch",
+  opts:["1/3","1/2","2/3","1/6"], ai:0},
+ {t:"若 a = 2、b = −3，求 a² − 2ab", a:"16", tier:3, kp:"整式求值", em:"符号错误", type:"in"},
+ {t:"某数的 3 倍减 5 等于 16，求这个数", a:"7", tier:3, kp:"一元一次方程", em:"计算失误", type:"in"},
+
+ {t:"一个长方形花坛的长比宽多 3 m，面积是 40 m²。求花坛的长。", a:"8", alt:["8m","8 m"],
+  tier:3, kp:"一元二次方程", em:"漏解", type:"app"},
+ {t:"一架 15 m 长的梯子斜靠在墙上，梯脚距墙根 9 m。梯子顶端离地面多高？", a:"12", alt:["12m"],
+  tier:3, kp:"勾股定理", em:"计算失误", type:"app"},
+ {t:"某商品原价 200 元，先涨价 10%，再降价 10%。现价是多少元？", a:"198", alt:["198元"],
+  tier:2, kp:"有理数运算", em:"计算失误", type:"app"},
+ {t:"袋中有 3 个红球、2 个白球，一次摸出 2 个，恰好 1 红 1 白的概率是多少？", a:"3/5",
+  tier:3, kp:"概率初步", em:"概率模型构建不全", type:"app"},
+ {t:"小明步行去学校，速度 60 m/min，用时 10 min；原路返回时速度 50 m/min。返回需要多少分钟？",
+  a:"12", alt:["12min"], tier:2, kp:"比例", em:"计算失误", type:"app"},
+ {t:"用因式分解计算：当 a = 5 时，3a² − 27 的值是多少？", a:"48",
+  tier:2, kp:"因式分解", em:"分解不彻底", type:"app"}
+];
+var qi = 0, answered = [], N = 10, lastPage = 'p-home', SEL = null;
+
+var MAIN = {'p-home':0,'p-book':1,'p-kp':1,'p-practice':2,'p-report':3,'p-ach':3};
+var curTab = 0;
+/* ===== 年级 / 科目选择器 ===== */
+function pickG(g){ if(g===CUR.grade) return; CUR.grade = g; applyScope(); }
+function pickS(s){ if(s===CUR.subject) return; CUR.subject = s; applyScope(); }
+function scopeLabel(){ return CUR.subject + ' \u00b7 ' + CUR.grade; }
+function renderScope(){
+  var gh='', sh='', i;
+  for(i=0;i<GRADES.length;i++)
+    gh += '<div class="chip' + (GRADES[i]===CUR.grade?' on':'')
+       + '" onclick="pickG(\'' + GRADES[i] + '\')">' + GRADES[i] + '</div>';
+  for(i=0;i<SUBJECTS.length;i++)
+    sh += '<div class="chip' + (SUBJECTS[i]===CUR.subject?' on':'')
+       + '" onclick="pickS(\'' + SUBJECTS[i] + '\')">' + SUBJECTS[i] + '</div>';
+  document.getElementById('g-chips').innerHTML = gh;
+  document.getElementById('s-chips').innerHTML = sh;
+  document.getElementById('sc-now').textContent = '\u5f53\u524d ' + scopeLabel();
+  var w = cur().weak;
+  document.getElementById('sc-note').textContent = w.length
+    ? ('\u672c\u8303\u56f4 ' + w.length + ' \u4e2a\u8584\u5f31\u77e5\u8bc6\u70b9 \u00b7 '
+       + wrongOf(w) + ' \u6761\u9519\u9898 \u00b7 \u4e0e\u5176\u4ed6\u5e74\u7ea7\u79d1\u76ee\u5206\u5f00\u7b97')
+    : ('\u5207\u6362\u5e74\u7ea7\u6216\u79d1\u76ee\u540e\uff0c\u7ec3\u4e60\u3001\u9519\u9898\u672c\u548c\u62a5\u544a\u90fd\u4f1a\u8ddf\u7740\u5207\u6362');
+}
+function statCard(n,l){
+  return '<div class="stat"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>';
+}
+function renderHome(){
+  var w = cur().weak, s = cur().stats, em = topEm(w), h = '', i, n = 0;
+  document.getElementById('stats').innerHTML =
+      statCard(p1Of(w),'\u4e0d\u719f') + statCard(w.length,'\u8584\u5f31')
+    + statCard(wrongOf(w),'\u9519\u9898') + statCard(s.totalAns,'\u4f5c\u7b54');
+  document.getElementById('hd-sub').textContent = s.streak > 0
+    ? ('\u5df2\u8fde\u7eed\u7ec3\u4e60 ' + s.streak + ' \u5929 \u00b7 \u4e0a\u6b21\u7ec3\u4e60 '
+       + s.last + ' \u5929\u524d')
+    : ('\u8fd9\u4e2a\u8303\u56f4\u8fd8\u6ca1\u6709\u7ec3\u4e60\u8bb0\u5f55');
+  document.getElementById('o-em').textContent = em.tot
+    ? (em.name + ' \u00b7 \u8fd1 ' + em.tot + ' \u6b21\u51fa\u73b0 ' + em.n + ' \u6b21') : '\u2014';
+  document.getElementById('o-n').textContent = N + ' \u9898';
+  document.getElementById('o-imp').textContent = cur().imports.length
+    ? (cur().imports[0].d + ' ' + cur().imports[0].name + ' \u00b7 '
+       + cur().imports[0].n + ' \u6761\u9519\u9898') : '\u6682\u65e0\u5bfc\u5165';
+  h = '';
+  for(i=0;i<cur().imports.length;i++){
+    var m = cur().imports[i];
+    h += '<div class="row"><span>' + m.d + ' ' + m.name + '</span><span>'
+       + '<span class="tag em">' + m.n + ' \u6761\u9519\u9898</span>'
+       + '<span class="tag ok">\u5df2\u786e\u8ba4</span></span></div>';
+  }
+  if(!h) h = '<div class="hint">\u8fd8\u6ca1\u6709\u5bfc\u5165\u8bb0\u5f55</div>';
+  document.getElementById('o-recent').innerHTML = h;
+  var empty = (w.length === 0 || BANK.length === 0);
+  document.getElementById('stats').style.display = empty ? 'none' : 'grid';
+  document.getElementById('home-body').style.display = empty ? 'none' : 'block';
+  document.getElementById('sc-empty').style.display = empty ? 'block' : 'none';
+  document.getElementById('o-start').disabled = empty;
+  if(empty) document.getElementById('sc-empty-k').textContent = scopeLabel();
+}
+/* 报告页：把内容整体包进 rpt-body，空范围时整块隐藏 */
+function wrapReport(){
+  var p = document.getElementById('p-report');
+  if(!p || document.getElementById('rpt-body')) return;
+  var w = document.createElement('div'); w.id = 'rpt-body';
+  while(p.firstChild) w.appendChild(p.firstChild);
+  p.appendChild(w);
+  var e = document.createElement('div');
+  e.id = 'rpt-empty'; e.className = 'card empty'; e.style.display = 'none';
+  e.innerHTML = '<div class="em-i">📊</div>'
+    + '<div class="em-t">「<span id="rpt-empty-k"></span>」还出不了报告</div>'
+    + '<div class="em-s">这个范围下还没有足够的作答数据<br>先练一轮，报告就能算出来了</div>'
+    + '<button class="btn ghost" onclick="enterPractice()">去练习</button>';
+  p.appendChild(e);
+}
+function renderReport(){
+  var hd = document.getElementById('rpt-hd');
+  var b = document.getElementById('rpt-body'), e = document.getElementById('rpt-empty');
+  if(!b) return;
+  if(hd) hd.textContent = '学习报告 · ' + scopeLabel();
+  var has = WEAK.length > 0;
+  b.style.display = has ? 'block' : 'none';
+  e.style.display = has ? 'none' : 'block';
+  if(!has){ document.getElementById('rpt-empty-k').textContent = scopeLabel(); return; }
+}
+function applyScope(){
+  bindScope();
+  curKp = 0; WEAKF = 'all'; LockKp = ''; ONE = null; qi = 0;
+  answered = []; SEL = null;
+  QUIZ = BANK.length ? BANK.slice(0, N) : [];
+  SID = HIST.length ? (HIST[HIST.length-1].session + 1) : 1;
+  if(!cur().stats.practiced && WEAK.length) cur().stats.practiced = WEAK.length;
+  renderScope(); renderHome(); renderWeak('all'); renderReport();
+  go('p-home');
+  saveState();
+}
+
+function go(id){
+  var ps = document.querySelectorAll('.page');
+  for(var i=0;i<ps.length;i++){
+    ps[i].classList.remove('active');
+    ps[i].classList.remove('printing');
+  }
+  document.getElementById(id).classList.add('active');
+  if(MAIN[id] !== undefined) curTab = MAIN[id];   // 二级页保持原 Tab 高亮
+  var ts = document.querySelectorAll('.tab');
+  for(var j=0;j<ts.length;j++) ts[j].classList.remove('active');
+  ts[curTab].classList.add('active');
+  document.querySelector('.screen').scrollTop = 0;
+}
+function pick(el){
+  var cs = el.parentNode.querySelectorAll('.chip');
+  for(var i=0;i<cs.length;i++) cs[i].classList.remove('on');
+  el.classList.add('on');
+}
+
+/* ===== 薄弱项数据：以知识点为单位组织 ===== */
+var WEAK0 = [
+ {kp:"一元二次方程", p:"p1", st:"不熟", em:"漏解", emN:3, n:3, acc:"29%", accCls:"red",
+  days:2, tier:"简单", prog:25,
+  ems:[["漏解（只写出一个根）",3],["符号错误",1],["计算失误",1]],
+  qs:[{t:"解方程 x² − 5x + 6 = 0", mine:"x = 2", ans:"x = 2 或 x = 3",
+       m:"首次 10-08 · 已复习 3 次 · 最近 10-28 仍错", d:"10-28"},
+      {t:"解方程 x² − 9 = 0", mine:"x = 3", ans:"x = 3 或 x = −3",
+       m:"首次 10-12 · 已复习 2 次 · 最近 10-24 仍错", d:"10-24"},
+      {t:"若 x² − 5x + 6 = 0 的两根为 x₁、x₂，求 x₁ + x₂", mine:"6", ans:"5",
+       m:"首次 09-14 · 已复习 1 次 · 最近 09-27 做对", d:"09-27"}]},
+
+ {kp:"因式分解", p:"p1", st:"不熟", em:"分解不彻底", emN:3, n:3, acc:"20%", accCls:"red",
+  days:3, tier:"简单", prog:20,
+  ems:[["分解不彻底",3],["未先提公因式",1]],
+  qs:[{t:"分解因式 2a² − 8", mine:"2(a² − 4)", ans:"2(a + 2)(a − 2)",
+       m:"首次 10-15 · 已复习 2 次 · 最近 10-26 仍错", d:"10-26"},
+      {t:"分解因式 x³ − 4x", mine:"x(x² − 4)", ans:"x(x + 2)(x − 2)",
+       m:"首次 10-18 · 已复习 2 次 · 最近 10-25 仍错", d:"10-25"},
+      {t:"分解因式 3a² − 27", mine:"3(a² − 9)", ans:"3(a + 3)(a − 3)",
+       m:"首次 09-08 · 已复习 1 次 · 最近 09-23 做对", d:"09-23"}]},
+
+ {kp:"分式化简", p:"p1", st:"不熟", em:"漏定义域条件", emN:2, n:3, acc:"25%", accCls:"red",
+  days:1, tier:"简单", prog:22,
+  ems:[["漏定义域条件（分母≠0）",2],["约分错误",1]],
+  qs:[{t:"化简 (x² − 9) / (x − 3)", mine:"x + 3", ans:"x + 3（x ≠ 3）",
+       m:"首次 10-25 · 已复习 2 次 · 最近 10-28 仍错", d:"10-28"},
+      {t:"化简 (x² − 4) / (x − 2)", mine:"x + 2", ans:"x + 2（x ≠ 2）",
+       m:"首次 09-10 · 已复习 2 次 · 最近 09-26 做对", d:"09-26"},
+      {t:"若 (x² − 1) / (x + 1) = 0，求 x", mine:"无解", ans:"x = 1",
+       m:"首次 10-27 · 已复习 1 次 · 最近 10-30 做对", d:"10-30"}]},
+
+ {kp:"二次函数图像", p:"p2", st:"一般", em:"顶点坐标符号错误", emN:2, n:4, acc:"50%", accCls:"",
+  days:5, tier:"中等", prog:50,
+  ems:[["顶点坐标符号错误",2],["对称轴公式记错",2],["开口方向判断错误",1],["计算失误",1]],
+  qs:[{t:"y = x² − 4x + 3 的顶点坐标", mine:"(−2, −1)", ans:"(2, −1)",
+       m:"首次 10-05 · 已复习 3 次 · 最近 10-26 仍错", d:"10-26"},
+      {t:"y = x² − 6x + 5 与 x 轴的交点", mine:"(1, 0)、(−5, 0)", ans:"(1, 0)、(5, 0)",
+       m:"首次 10-16 · 已复习 2 次 · 最近 10-27 仍错", d:"10-27"},
+      {t:"y = 2x² + 4x − 1 的对称轴", mine:"x = 1", ans:"x = −1",
+       m:"首次 08-28 · 已复习 3 次 · 最近 09-24 做对", d:"09-24"},
+      {t:"y = −x² + 2x 的开口方向", mine:"向上", ans:"向下",
+       m:"首次 09-02 · 已复习 2 次 · 最近 09-30 做对", d:"09-30"}]},
+
+ {kp:"概率初步", p:"p2", st:"一般", em:"样本空间列举不全", emN:2, n:2, acc:"60%", accCls:"",
+  days:8, tier:"中等", prog:60,
+  ems:[["样本空间列举不全",2]],
+  qs:[{t:"抛硬币 3 次，恰好 2 次正面的概率", mine:"1/2", ans:"3/8",
+       m:"首次 10-11 · 已复习 2 次 · 最近 10-23 仍错", d:"10-23"},
+      {t:"掷两枚骰子，点数之和为 7 的概率", mine:"1/12", ans:"1/6",
+       m:"首次 09-05 · 已复习 2 次 · 最近 09-21 做对", d:"09-21"}]},
+
+ {kp:"勾股定理", p:"p3", st:"熟悉", em:"计算失误", emN:1, n:2, acc:"100%", accCls:"grn",
+  days:12, tier:"困难", prog:88,
+  ems:[["计算失误",1]],
+  qs:[{t:"Rt△ 两直角边为 5、12，求斜边", mine:"17", ans:"13",
+       m:"首次 10-06 · 已复习 4 次 · 近 3 次全对", d:"10-18"},
+      {t:"Rt△ 斜边 13、一直角边 5，求另一直角边", mine:"8", ans:"12",
+       m:"首次 10-08 · 已复习 3 次 · 近 3 次全对", d:"10-18"}]}
+];
+var GRP = {p1:"不熟", p2:"一般", p3:"熟悉"};
+var EXP_SRC = [], ALL_WRONG = [];
+for(var _i=0;_i<WEAK.length;_i++){
+  for(var _j=0;_j<WEAK[_i].qs.length;_j++){
+    ALL_WRONG.push({t:WEAK[_i].qs[_j].t, a:WEAK[_i].qs[_j].ans, d:WEAK[_i].qs[_j].d});
+  }
+}
+
+function renderWeak(f){
+  var list = [], i;
+  for(i=0;i<WEAK.length;i++){ if(f==='all' || WEAK[i].p===f) list.push(WEAK[i]); }
+  var h = '', lv = {p1:'lv1', p2:'lv2', p3:'lv3'};
+  for(i=0;i<list.length;i++){
+    var w = list[i], idx = WEAK.indexOf(w);
+    h += '<div class="weak ' + w.p + '" onclick="openKp(' + idx + ')">'
+      +  '<div class="weak-hd"><div class="weak-kp">' + w.kp + '</div>'
+      +  '<span class="tag ' + lv[w.p] + '">' + w.st + '</span></div>'
+      +  '<div class="weak-ft"><div class="weak-acc">近期正确率'
+      +  '<b class="' + w.accCls + '">' + w.acc + '</b></div>'
+      +  '<div class="weak-go" onclick="event.stopPropagation();practiceKp(' + idx + ')">'
+      +  '练这个知识点 ›</div></div></div>';
+  }
+  document.getElementById('weak-list').innerHTML = h;
+}
+function filterWeak(f, el){ pick(el); renderWeak(f); }
+
+function openKp(i){
+  var w = WEAK[i], h = '', j;
+  h += '<div class="kp-hd">' + w.kp + '</div>'
+     + '<div class="sub">' + w.st + ' · 错题 ' + w.n + ' 条</div>'
+     + '<div class="card"><div class="t-l">当前水平</div>'
+     + '<div class="row" style="padding-top:0;border:0"><span>能稳定做对的最高难度</span><b>' + w.tier + '</b></div>'
+     + '<div class="prog"><i style="width:' + w.prog + '%"></i></div>'
+     + '<div class="row"><span>近期正确率</span><b>' + w.acc + '</b></div>'
+     + '</div>'
+     + '<div class="card"><div class="t-l">错因分布</div>';
+  for(j=0;j<w.ems.length;j++){
+    h += '<div class="row"><span>' + w.ems[j][0] + '</span><b>' + w.ems[j][1] + ' 次</b></div>';
+  }
+  h += '</div><div class="grp-t">这个知识点的错题（' + w.n + '）</div>';
+  for(j=0;j<w.qs.length;j++){
+    var q = w.qs[j];
+    h += '<div class="qitem" onclick="practiceOne(' + i + ',' + j + ')"><div class="qt">' + (j+1) + '. ' + q.t + '</div>'
+      +  '<div class="qa">你的答案 <b>' + q.mine + '</b> · 正确答案 <b>' + q.ans + '</b></div>'
+      +  '<div class="qm">' + q.m
+      +  (q.last ? ' · <span class="last">本次' + q.last + '（' + q.lastD + '）</span>' : '')
+      +  '</div><div class="qi-go">练这道题 ›</div></div>';
+  }
+  if(w.qs.length < w.n){
+    h += '<div class="grp-t">另有 ' + (w.n - w.qs.length) + ' 条同类错题</div>';
+  }
+  var exp = [];
+  for(j=0;j<w.qs.length;j++){ exp.push({t:w.qs[j].t, a:w.qs[j].ans}); }
+  h += '<button class="btn" onclick="practiceKp(' + i + ')">只练这个知识点</button>'
+     + '<button class="btn ghost" onclick="openExp(\'kp\')">导出打印（' + exp.length + ' 题）</button>'
+     + '<button class="btn ghost" onclick="go(\'p-book\')">返回</button>';
+  EXP_SRC = exp; EXP = {src: exp, kp: WEAK[i].kp};
+  document.getElementById('kp-body').innerHTML = h;
+  go('p-kp');
+}
+
+/* ===== 练习：点 Tab 直接进入答题，不再经过选量页 ===== */
+var LockKp = '';
+function practiceKp(i){
+  LockKp = WEAK[i].kp;
+  enterPractice(10, LockKp);
+}
+
+/* ===== 单题练习：点某一条错题，直接练这道题 ===== */
+var ONE = null, ONE_OK = null;
+function tierNum(s){ return s === '简单' ? 1 : (s === '中等' ? 2 : 3); }
+function altsOf(ans){
+  var out = {}, k;
+  function add(t){ t = norm(t); if(t) out[t] = 1; }
+  add(ans);
+  var noPar = String(ans).replace(/（[^）]*）/g,'').replace(/\s+/g,' ').trim();
+  add(noPar);
+  var noVar = noPar.replace(/(^|[\s，,])([A-Za-z][₀-₉]?)\s*=\s*/g,'$1').trim();
+  add(noVar);
+  var joined = noVar.replace(/\s*(或|、|,|，)\s*/g,',');
+  add(joined);
+  var ps = joined.split(',');
+  if(ps.length > 1 && joined.indexOf('(') < 0) add(ps.slice().reverse().join(','));
+  add(noVar.replace(/\s/g,''));
+  var r = []; for(k in out) r.push(k);
+  return r;
+}
+function checkAns(v, q){
+  var nv = norm(v);
+  if(nv === '') return false;
+  if(nv === norm(q.a)) return true;
+  if(q.alt){ for(var i=0;i<q.alt.length;i++){ if(nv === norm(q.alt[i])) return true; } }
+  if(q.type === 'app' && nv.indexOf(norm(q.a)) >= 0) return true;   // 应用题：写出带单位的答案也算对
+  return false;
+}
+function practiceOne(i, j){
+  var w = WEAK[i], q = w.qs[j];
+  startOne({t:q.t, a:q.ans, alt:altsOf(q.ans), tier:tierNum(w.tier), kp:w.kp,
+            em:w.em, type:'in'}, i, j);
+}
+function startOne(q, i, j){
+  ONE = {i:i, j:j}; ONE_OK = null;
+  QUIZ = [q]; qi = 0;
+  SID = HIST.length ? (HIST[HIST.length-1].session + 1) : 1;
+  saveState();
+  document.getElementById('st-res').style.display = 'none';
+  document.getElementById('st-quiz').style.display = 'block';
+  document.getElementById('q-total').textContent = '1';
+  renderQ();
+  document.querySelector('.screen').scrollTop = 0;
+  go('p-practice');
+}
+function finishOne(ok){
+  if(!ONE) return;
+  var i = ONE.i, q = WEAK[i].qs[ONE.j];
+  q.last = ok ? '做对' : '仍错';
+  q.lastD = TODAY;
+  ONE = null;
+  openKp(i);
+}
+function openKpFromReport(name){
+  for(var i=0;i<WEAK.length;i++){ if(WEAK[i].kp === name){ openKp(i); return; } }
+  go('p-book');
+}
+function tierDist(list){
+  var c = {1:0,2:0,3:0};
+  for(var i=0;i<list.length;i++) c[list[i].tier]++;
+  return '简单 ' + c[1] + ' · 中等 ' + c[2] + ' · 困难 ' + c[3];
+}
+function kpOrder(byKp){
+  var ord = [], i, k;
+  for(i=0;i<WEAK.length;i++){
+    if(byKp[WEAK[i].kp]){
+      ord.push(WEAK[i].kp);
+      if(WEAK[i].p === 'p1') ord.push(WEAK[i].kp);   // 不熟的知识点占双倍
+    }
+  }
+  for(k in byKp){ if(ord.indexOf(k) < 0) ord.push(k); }
+  return ord;
+}
+function drawMix(n, byKp, skip){
+  var ord = kpOrder(byKp), cur = {}, out = [], i, k, added;
+  for(i=0;i<ord.length;i++) cur[ord[i]] = 0;
+  while(out.length < n){
+    added = false;
+    for(i=0;i<ord.length && out.length<n;i++){
+      k = ord[i];
+      if(k === skip) continue;
+      var idx = cur[k]++;
+      if(byKp[k][idx]){ out.push(byKp[k][idx]); added = true; }
+    }
+    if(!added) break;
+  }
+  return out;
+}
+function fixTypes(list){
+  var n = list.length, i, j, q;
+  var quota = {app: Math.max(1, Math.round(n*0.2)), ch: Math.max(1, Math.round(n*0.4))};
+  var cnt = {app:0, ch:0, in:0};
+  for(i=0;i<list.length;i++) cnt[list[i].type]++;
+  var out = list.slice();
+  for(i=0;i<out.length;i++){
+    var need = null;
+    if(cnt.app < quota.app) need = 'app';
+    else if(cnt.ch < quota.ch) need = 'ch';
+    if(!need) break;
+    q = out[i];
+    if(q.type === need) continue;
+    var has = {};
+    for(j=0;j<out.length;j++) has[out[j].t] = 1;
+    var cand = null;
+    for(j=0;j<BANK.length;j++){                       // 优先补同知识点的题
+      if(BANK[j].type === need && !has[BANK[j].t] && BANK[j].kp === q.kp){ cand = BANK[j]; break; }
+    }
+    if(!cand){
+      for(j=0;j<BANK.length;j++){ if(BANK[j].type === need && !has[BANK[j].t]){ cand = BANK[j]; break; } }
+    }
+    if(!cand) break;
+    cnt[q.type]--; cnt[need]++; out[i] = cand;
+  }
+  return out;
+}
+function draw(n, kp){
+  var byKp = {}, i, k;
+  for(i=0;i<BANK.length;i++){ k = BANK[i].kp; if(!byKp[k]) byKp[k] = []; byKp[k].push(BANK[i]); }
+  if(!kp) return fixTypes(drawMix(n, byKp, null));
+  var hit = byKp[kp] || [], take = Math.max(1, Math.round(n*0.6));
+  var out = hit.slice(0, Math.min(take, hit.length));
+  return fixTypes(out.concat(drawMix(n - out.length, byKp, kp)).slice(0, n));
+}
+function kpList(list){
+  var c = {}, ord = [], i;
+  for(i=0;i<list.length;i++){ var k = list[i].kp; if(c[k] === undefined){ c[k] = 0; ord.push(k); } c[k]++; }
+  ord.sort(function(a,b){ return c[b] - c[a]; });
+  var show = ord.slice(0,4), s = show.join(' · ');
+  if(ord.length > show.length) s += ' 等 ' + ord.length + ' 个知识点';
+  return s;
+}
+function enterPractice(n, kp){
+  LockKp = (kp === undefined) ? '' : kp;   // 不传＝全局抽题；传值＝锁定该知识点
+  if(n) N = n;
+  var quiz = draw(N, LockKp);
+  QUIZ = quiz;
+  document.getElementById('q-total').textContent = quiz.length;
+  document.getElementById('res-sub').textContent = quiz.length + ' 题 · 用时 6 分 40 秒';
+  document.getElementById('st-res').style.display = 'none';
+  document.getElementById('st-quiz').style.display = 'block';
+  qi = 0; answered = [];
+  SID = HIST.length ? (HIST[HIST.length-1].session + 1) : 1;
+  saveState();
+  renderQ();
+  go('p-practice');
+}
+function renderQ(){
+  var q = QUIZ[qi], i;
+  SEL = null;
+  document.getElementById('q-idx').textContent = (qi+1);
+  document.getElementById('q-text').textContent = (qi+1) + '. ' + q.t;
+  document.getElementById('q-fb').innerHTML = '';
+  document.getElementById('q-btn').textContent = '提交';
+  var oBox = document.getElementById('q-opts'), iBox = document.getElementById('q-input');
+  document.getElementById('q-tag').style.display = (q.type === 'app') ? 'block' : 'none';
+  oBox.innerHTML = '';
+  if(q.type === 'ch'){
+    iBox.style.display = 'none';
+    oBox.style.display = 'block';
+    for(i=0;i<q.opts.length;i++) (function(i){
+      var d = document.createElement('div');
+      d.className = 'opt';
+      d.textContent = 'ABCD'[i] + '. ' + q.opts[i];
+      d.onclick = function(){
+        var cs = oBox.children, j;
+        for(j=0;j<cs.length;j++) cs[j].className = 'opt';
+        d.className = 'opt on'; SEL = i;
+      };
+      oBox.appendChild(d);
+    })(i);
+  } else {
+    oBox.style.display = 'none';
+    iBox.style.display = 'block';
+    document.getElementById('q-in').value = '';
+    document.getElementById('q-in').placeholder = (q.type === 'app')
+      ? '写出关键步骤，最后给出答案' : '输入答案，多个用逗号分隔';
+  }
+  document.querySelector('.screen').scrollTop = 0;
+}
+
+function norm(s){ return (s||'').replace(/\s/g,'').replace(/，/g,',').toLowerCase(); }
+function nextQ(){
+  var btn = document.getElementById('q-btn');
+  if(btn.textContent === '提交'){
+    var q = QUIZ[qi], v, ok;
+    if(q.type === 'ch'){
+      if(SEL === null){
+        document.getElementById('q-fb').innerHTML = '<div class="wrong">先选一个选项，再提交。</div>';
+        return;
+      }
+      v = q.opts[SEL]; ok = (SEL === q.ai);
+      var cs = document.getElementById('q-opts').children, c;
+      for(c=0;c<cs.length;c++) cs[c].className = 'opt' + (c === q.ai ? ' right' : (c === SEL ? ' wrong' : ''));
+    } else {
+      v = document.getElementById('q-in').value;
+      ok = checkAns(v, q);
+    }
+    ONE_OK = ok;
+    answered.push({v:v, ok:ok});
+    HIST.push({qid:q.t, kp:q.kp, tier:q.tier, ok:ok, d:TODAY, session:SID, role:'bank'});
+    saveState();
+    var ansTxt = (q.type === 'ch') ? ('ABCD'[q.ai] + '. ' + q.opts[q.ai]) : q.a;
+    document.getElementById('q-fb').innerHTML = ok
+      ? '<div class="correct"><b>做对了</b> · ' + ansTxt + '</div>'
+      : '<div class="wrong"><b>你的答案</b> ' + (v||'（空）') + ' &nbsp;·&nbsp; <b>正确答案</b> ' + ansTxt + '</div>';
+    if(ONE){
+      document.getElementById('q-fb').innerHTML += ok
+        ? '<div style="font-size:11.5px;color:#8a9099;margin-top:6px">这条错题本次做对，复习间隔会拉长。</div>'
+        : '<div style="font-size:11.5px;color:#8a9099;margin-top:6px">仍错，已记入错误机制「' + (q.em || '待确认') + '」，下一轮会加推同类题。</div>';
+    }
+    btn.textContent = ONE ? '完成，回到错题' : (qi === QUIZ.length-1 ? '查看本轮反馈' : '下一题 ›');
+    return;
+  }
+  if(ONE){ finishOne(ONE_OK); return; }
+  if(qi < QUIZ.length-1){ qi++; renderQ(); }
+  else {
+    document.getElementById('st-quiz').style.display='none';
+    document.getElementById('st-res').style.display='block';
+    document.querySelector('.screen').scrollTop = 0;
+  }
+}
+
+/* ===== 抽屉 ===== */
+function openSheet(id){
+  document.getElementById('mask').style.display = 'block';
+  document.getElementById(id).style.display = 'block';
+}
+function closeSheet(){
+  document.getElementById('mask').style.display = 'none';
+  document.getElementById('sk-exp').style.display = 'none';
+}
+
+/* ===== 导入流程 ===== */
+var IMP0 = [
+ {no:1, t:"解方程 x² − 5x + 6 = 0", mine:"x = 2", ans:"x = 2 或 x = 3", ok:false, em:"漏解"},
+ {no:2, t:"分解因式 2a² − 8", mine:"2(a² − 4)", ans:"2(a + 2)(a − 2)", ok:false, em:"分解不彻底"},
+ {no:3, t:"Rt△ 直角边 5、12，求斜边", mine:"13", ans:"13", ok:true, em:"—"},
+ {no:4, t:"化简 (x² − 9)/(x − 3)", mine:"x + 3", ans:"x + 3（x ≠ 3）", ok:false, em:"漏条件"},
+ {no:5, t:"y = x² − 4x + 3 的顶点", mine:"(2, −1)", ans:"(2, −1)", ok:true, em:"—"},
+ {no:6, t:"解方程 2x² − 8 = 0", mine:"x = 2", ans:"x = 2 或 x = −2", ok:false, em:"漏解"},
+ {no:7, t:"抛硬币 3 次恰好 2 次正面", mine:"3/8", ans:"3/8", ok:true, em:"—"},
+ {no:8, t:"分解因式 x³ − 4x", mine:"x(x² − 4)", ans:"x(x + 2)(x − 2)", ok:false, em:"分解不彻底"}
+];
+function doImport(){
+  IMPD = null; IMPCFM = null;
+  document.getElementById('im-1').style.display = 'none';
+  document.getElementById('im-2').style.display = 'block';
+  var i = 0;
+  var t = setInterval(function(){
+    i++;
+    document.getElementById('im-bar').style.width = (i*12.5) + '%';
+    document.getElementById('im-cnt').textContent = Math.min(i,8) + ' / 8 题';
+    if(i >= 8){
+      clearInterval(t);
+      renderImport();
+      document.getElementById('im-2').style.display = 'none';
+      document.getElementById('im-3').style.display = 'block';
+    }
+  }, 260);
+}
+/* 逐题确认：题号 + 题干成对，日期与错因可改，确认是必经步骤（评估 R7） */
+var EMS = ['漏解','符号错误','计算失误','漏条件','审题遗漏','概念混淆','方法选择错误',
+           '公式记忆错误','分类讨论不全','图形误读','单位与量纲错误','待确认'];
+
+/* ===== 年级 × 科目：错题 / 练习 / 报告的一级分区 ===== */
+var GRADES = ['初一','初二','初三'];
+var SUBJECTS = ['数学','语文','英语','物理','化学'];
+var CUR = {grade:'初三', subject:'数学'};
+var SCOPES = {};
+function skey(g,s){ return (s||CUR.subject)+'|'+(g||CUR.grade); }
+function scopeOf(g,s){
+  var k = skey(g,s);
+  if(!SCOPES[k]) SCOPES[k] = {weak:[], imp:[], bank:[], imports:[], hist:[],
+      stats:{streak:0, last:0, totalAns:0, practiced:0}};
+  return SCOPES[k];
+}
+function cur(){ return scopeOf(CUR.grade, CUR.subject); }
+function bindScope(){
+  var s = cur();
+  if(!s.hist) s.hist = [];
+  if(!s.stats) s.stats = {streak:0, last:0, totalAns:0, practiced:0};
+  WEAK = s.weak; BANK = s.bank; IMP = s.imp; IMPORTS = s.imports; HIST = s.hist;
+  ALL_WRONG = [];
+  for(var i=0;i<WEAK.length;i++) for(var j=0;j<WEAK[i].qs.length;j++)
+    ALL_WRONG.push({t:WEAK[i].qs[j].t, a:WEAK[i].qs[j].ans, d:WEAK[i].qs[j].d});
+}
+function wrongOf(w){ var t=0,i; for(i=0;i<w.length;i++) t+=w[i].n; return t; }
+function p1Of(w){ var t=0,i; for(i=0;i<w.length;i++) if(w[i].p==='p1') t++; return t; }
+function topEm(w){
+  var c={}, i, j, k, v, best='—', bn=0, tot=0;
+  for(i=0;i<w.length;i++) for(j=0;j<w[i].ems.length;j++){
+    k = w[i].ems[j][0]; v = w[i].ems[j][1];
+    c[k] = (c[k]||0) + v; tot += v;
+    if(c[k] > bn){ bn = c[k]; best = k; }
+  }
+  return {name:best, n:bn, tot:tot};
+}
+/* 内置演示数据只挂在「数学 · 初三」，其余年级/科目为空，导入后各归各的 */
+var IMPORTS0 = [{d:'10-28', name:'数学周测', n:5},
+                {d:'10-22', name:'课堂作业', n:3},
+                {d:'10-15', name:'单元测试', n:4}];
+SCOPES['数学|初三'] = {weak:WEAK0, imp:IMP0, bank:BANK0, imports:IMPORTS0,
+  hist:[], stats:{streak:6, last:2, totalAns:142, practiced:12}};
+
+var IMPD = null, IMPCFM = null, IMPDATE = "";
+function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;'); }
+function emOpts(cur){
+  var h = '<option value="—"' + (cur==='—'?' selected':'') + '>—</option>';
+  for(var i=0;i<EMS.length;i++)
+    h += '<option value="' + EMS[i] + '"' + (cur===EMS[i]?' selected':'') + '>' + EMS[i] + '</option>';
+  return h;
+}
+function renderImport(){
+  if(!IMPD){
+    IMPD = [];
+    for(var k=0;k<IMP.length;k++)
+      IMPD.push({no:IMP[k].no, t:IMP[k].t, mine:IMP[k].mine, ans:IMP[k].ans,
+                 ok:IMP[k].ok, em:IMP[k].em, d:TODAY});
+    IMPCFM = [];
+    for(k=0;k<IMP.length;k++) IMPCFM.push(false);
+    IMPDATE = TODAY;
+  }
+  var h = '';
+  for(var i=0;i<IMPD.length;i++){
+    var x = IMPD[i], done = IMPCFM[i], dis = done ? ' disabled' : '';
+    h += '<div class="cfm' + (done?' done':'') + '" id="cfm' + i + '">'
+      +  '<div class="no">第 <input class="nin" value="' + x.no + '"' + dis
+      +  (done?'':' onchange="impSet('+i+',\'no\',this.value)"') + '> 题'
+      +  (x.ok ? ' <span class="tag ok">判为正确</span>' : ' <span class="tag em">' + x.em + '</span>')
+      +  (done ? ' <span class="ok-t">✓ 已确认</span>' : '') + '</div>'
+      +  '<div><input class="tvin" value="' + esc(x.t) + '"' + dis
+      +  (done?'':' onchange="impSet('+i+',\'t\',this.value)"') + '></div>'
+      +  '<div class="ca">你的答案 <input value="' + esc(x.mine) + '"' + dis
+      +  (done?'':' onchange="impSet('+i+',\'mine\',this.value)"') + '> · 正确答案 <input value="'
+      +  esc(x.ans) + '"' + dis + (done?'':' onchange="impSet('+i+',\'ans\',this.value)"') + '></div>'
+      +  '<div class="cd">作答日期 <input class="din" value="' + x.d + '"' + dis
+      +  (done?'':' onchange="impSet('+i+',\'d\',this.value)"') + '> · 错因 <select' + dis
+      +  (done?'':' onchange="impSet('+i+',\'em\',this.value)"') + '>' + emOpts(x.em) + '</select></div>'
+      +  '<div class="act">'
+      +  (done ? '<button class="btn mini ghost" onclick="impEdit(' + i + ')">修改</button>'
+               : '<button class="btn mini" onclick="impOne(' + i + ')">确认这道题</button>')
+      +  '</div></div>';
+  }
+  document.getElementById('im-list').innerHTML = h;
+  var left = 0, nw = 0;
+  for(i=0;i<IMPCFM.length;i++) if(!IMPCFM[i]) left++;
+  for(i=0;i<IMPD.length;i++) if(!IMPD[i].ok) nw++;
+  var fin = document.getElementById('im-fin');
+  if(fin){
+    fin.textContent = left===0 ? ('确认入库（' + nw + ' 条错题）') : ('还有 ' + left + ' 题未确认');
+    fin.className = left===0 ? 'btn' : 'btn dis';
+  }
+  var tip = document.getElementById('im-tip');
+  if(tip && left===0) tip.textContent = '';
+}
+function impSet(i,k,v){
+  IMPD[i][k] = v;
+  if(k==='em') IMPD[i].ok = (v==='—');
+  saveState();
+}
+function impOne(i){ IMPCFM[i] = true; renderImport(); saveState(); }
+function impEdit(i){ IMPCFM[i] = false; renderImport(); }
+function guessKp(t){
+  for(var i=0;i<BANK.length;i++) if(BANK[i].t===t) return BANK[i].kp;
+  var kw = {'一元二次方程':['解方程','x²'],'因式分解':['分解因式'],'分式化简':['化简','/'],
+            '二次函数图像':['顶点','对称轴','抛物线'],'勾股定理':['直角边','斜边','Rt'],
+            '概率初步':['概率'],'整式运算':['整式','展开'],'有理数运算':['计算']};
+  for(var k in kw) for(var j=0;j<kw[k].length;j++)
+    if(t.indexOf(kw[k][j])>=0) return k;
+  return '待归类';
+}
+function finishImport(){
+  if(!IMPCFM) renderImport();
+  for(var i=0;i<IMPCFM.length;i++){
+    if(!IMPCFM[i]){
+      var tip = document.getElementById('im-tip');
+      if(tip) tip.textContent = '第 ' + (i+1) + ' 题还没确认，逐题确认后才能入库';
+      var el = document.getElementById('cfm'+i);
+      if(el) el.scrollIntoView({block:'center'});
+      return;
+    }
+  }
+  var added = 0;
+  for(i=0;i<IMPD.length;i++){
+    var x = IMPD[i];
+    if(x.ok) continue;
+    var kp = guessKp(x.t), hit = null;
+    for(var j=0;j<WEAK.length;j++) if(WEAK[j].kp===kp) hit = WEAK[j];
+    if(!hit){
+      hit = {kp:kp, p:"p2", st:"一般", em:x.em, emN:0, n:0, acc:"—", cls:"",
+             days:daysAgo(x.d), tier:"简单", prog:0, ems:[[x.em,0]], qs:[]};
+      WEAK.push(hit);
+    }
+    hit.qs.unshift({t:x.t, mine:x.mine, ans:x.ans, d:x.d, m:'首次 ' + x.d + ' · 本次导入'});
+    hit.n = hit.qs.length;
+    hit.emN = hit.emN + 1;
+    var found = false;
+    for(j=0;j<hit.ems.length;j++) if(hit.ems[j][0]===x.em){ hit.ems[j][1]++; found = true; }
+    if(!found) hit.ems.push([x.em, 1]);
+    added++;
+  }
+  IMP.length = 0;
+  for(i=0;i<IMPD.length;i++) IMP.push(IMPD[i]);
+  IMPORTS.unshift({d:IMPDATE, name:'本次导入', n:added});
+  if(!cur().stats.practiced) cur().stats.practiced = WEAK.length;
+  IMPD = null;
+  saveState();
+  renderWeak('all');
+  go('p-book');
+}
+
+/* ===== 本地持久化（刷新不丢） ===== */
+var LS_KEY = 'aimbook_m_v1';
+var SID = 1;
+bindScope();
+function saveState(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      v:2, cur:CUR, scopes:SCOPES, n:N, lock:LockKp
+    }));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    var s = localStorage.getItem(LS_KEY);
+    if(!s) return false;
+    var o = JSON.parse(s);
+    if(!o) return false;
+    if(o.v === 2 && o.scopes){
+      SCOPES = o.scopes;
+      if(o.cur) CUR = o.cur;
+      bindScope();
+      if(o.n) N = o.n;
+      if(typeof o.lock === 'string') LockKp = o.lock;
+      return true;
+    }
+    /* v1 旧数据：整体迁到「数学 · 初三」 */
+    if(!o.weak || !o.weak.length) return false;
+    var sc = scopeOf('初三','数学');
+    sc.weak = o.weak;
+    if(o.imp && o.imp.length) sc.imp = o.imp;
+    if(o.hist) sc.hist = o.hist;
+    CUR = {grade:'初三', subject:'数学'};
+    bindScope();
+    if(o.n) N = o.n;
+    if(typeof o.lock === 'string') LockKp = o.lock;
+    return true;
+  }catch(e){ return false; }
+}
+function resetLocal(){
+  try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  location.reload();
+}
+
+/* ===== 导出打印 ===== */
+var QUIZ = BANK.slice(0,10), EXP = {};
+var TODAY = "10-30";
+function doy(s){ var p = s.split('-'); return (parseInt(p[0],10)-1)*31 + parseInt(p[1],10); }
+function daysAgo(d){ return doy(TODAY) - doy(d); }
+function recentWrong(days){
+  var out = [];
+  for(var i=0;i<ALL_WRONG.length;i++) if(daysAgo(ALL_WRONG[i].d) <= days) out.push(ALL_WRONG[i]);
+  return out;
+}
+function expItems(m){
+  if(m==='quiz') return QUIZ;
+  if(m==='r30')  return recentWrong(30);
+  if(m==='all')  return ALL_WRONG;
+  return (EXP.src && EXP.src.length) ? EXP.src : ALL_WRONG;
+}
+function expLabel(m){
+  if(m==='quiz') return '本轮练习';
+  if(m==='r30')  return '近 30 日错题';
+  if(m==='all')  return '全部错题';
+  return EXP.kp || '按知识点';
+}
+/* 打开导出抽屉：默认本轮练习 */
+function openExp(m){
+  lastPage = document.querySelector('.page.active').id;
+  document.getElementById('ex-sub').textContent = '生成 A4 排版，可直接打印或存为 PDF';
+  var sel = document.getElementById('ex-sel'), opt = document.getElementById('opt-kp');
+  if(m==='kp'){ opt.textContent = '按知识点：' + (EXP.kp||''); opt.hidden = false; }
+  else { opt.hidden = true; }
+  sel.value = m || 'quiz';
+  onExp();
+  openSheet('sk-exp');
+}
+function onExp(){
+  var m = document.getElementById('ex-sel').value;
+  document.getElementById('ex-n').textContent = expItems(m).length + ' 题';
+}
+function doExport(){
+  closeSheet();
+  var m = document.getElementById('ex-sel').value;
+  var items = expItems(m), scope = expLabel(m), h = '', i;
+  h += '<div class="a4"><div class="a4-hd">数学错题练习（' + scope + '）</div>'
+    +  '<div class="a4-meta">共 ' + items.length + ' 题 · 生成于 10-30 · 姓名 ________　用时 ________</div>';
+  for(i=0;i<items.length;i++){
+    h += '<div class="a4-q"><span class="n">' + (i+1) + '.</span>' + items[i].t
+      +  (items[i].opts ? '<div class="a4-opt">' + items[i].opts.join('　　') + '</div>' : '') + '</div>'
+      +  '<div class="a4-blank"></div>';
+  }
+  h += '<div class="a4-ans"><b>参考答案</b><br>';
+  for(i=0;i<items.length;i++){
+    h += (i+1) + '. ' + items[i].a + '　';
+  }
+  h += '</div></div>';
+  document.getElementById('pr-body').innerHTML = h;
+  document.getElementById('pr-sub').textContent = items.length + ' 题 · A4 排版，答案附在末尾';
+  go('p-print');
+  document.getElementById('p-print').classList.add('printing');
+}
+var RESTORED = loadState();   // 刷新后回到上次状态，不是内置演示数据
+bindScope();
+wrapReport();
+renderScope();
+renderHome();
+renderWeak('all');
+renderReport();
+enterPracticePrep();
+
+/* ===== 成就系统：判定结果由作答流水回算，每条都能展开到题目 ===== */
+var ACH = [
+ {id:'streak-5d', cat:'streak', seal:'5d', t:'连续 5 天练习',
+  fact:'10-26 ~ 10-30 连续 5 天，每天至少完成 <b>1 轮</b>有效练习', date:'10-30'},
+
+ {id:'streak-3w', cat:'streak', seal:'3W', t:'三周不断档',
+  fact:'连续 3 周每周 <b>≥2 轮</b>有效练习（每轮 ≥10 题）', date:'10-30'},
+
+ {id:'streak-10', cat:'streak', seal:'10', t:'累计 10 轮有效练习',
+  fact:'142 次作答，其中 <b>10 轮</b>达标（单轮 ≥10 题）', date:'10-29'},
+
+ {id:'acc-30', cat:'acc', seal:'82%', t:'近 30 题正确率 82%',
+  fact:'近 30 题做对 <b>25 题</b>，比上一周期提高 9 个百分点', date:'10-30'},
+
+ {id:'acc-full', cat:'acc', seal:'100%', t:'单轮满分',
+  fact:'10-28 第 19 轮 <b>10 题全对</b>，中途未退出', date:'10-28'},
+
+ {id:'acc-80', cat:'acc', seal:'0.8', t:'整体正确率站上 80%',
+  fact:'近 7 天整体正确率 <b>0.81</b>，首次越过 0.8 线', date:'10-29'},
+
+ {id:'mst-2', cat:'mastery', seal:'2', t:'2 个知识点渐入佳境',
+  fact:'正确率 ≥70% 且样本 ≥6 题的知识点已达 <b>2 个</b>', date:'10-29'},
+
+ {id:'cln-half', cat:'clean', seal:'½', t:'错题存量减半',
+  fact:'在库错题从 34 条降到 <b>17 条</b>', date:'10-28'}
+];
+
+
+var ACH_DOING = [
+ {id:'streak-10d', cat:'streak', seal:'10d', t:'连续 10 天练习',
+  fact:'已连续 <b>5 天</b>，再坚持 5 天达成', p:0.5, ptext:'5 / 10 天'},
+
+ {id:'mst-4', cat:'mastery', seal:'4', t:'4 个知识点渐入佳境',
+  fact:'当前 <b>2 个</b>达标，还差 2 个', p:0.5, ptext:'2 / 4 个知识点'},
+
+ {id:'acc-85', cat:'acc', seal:'85%', t:'近 30 题正确率 85%',
+  fact:'当前 82%（25 / 30 题），还差 <b>1 题</b>', p:0.9, ptext:'25 / 30 题'}
+];
+
+
+
+
+function achCard(a, done){
+  var pill = done
+    ? (a.faded ? '<span class="ach-pill f">已回落</span>' : '<span class="ach-pill">已达成</span>')
+    : '<span class="ach-pill">进行中</span>';
+  var meta = done
+    ? '<div class="ach-meta2"><span>'+a.date+' 达成</span></div>'
+    : '<div class="ach-pbar"><i style="width:'+Math.round(a.p*100)+'%"></i></div>'
+        + '<div class="ach-meta2"><span>'+a.ptext+'</span></div>';
+  return '<div class="ach-item'+(done?'':' doing')+'" data-c="'+a.cat+'">'
+    + '<div class="ach-seal"><b>'+a.seal+'</b><i>'+(done?'ACH':'DOING')+'</i></div>'
+    + '<div class="ach-bd">'
+    +   '<div class="ach-hdt"><div class="ach-t">'+a.t+'</div>'+pill+'</div>'
+    +   '<div class="ach-fact">'+a.fact+'</div>'
+    +   meta
+    + '</div></div>';
+}
+function renderAch(){
+  var i, h='', d='';
+  for(i=0;i<ACH.length;i++) h += achCard(ACH[i], true);
+  for(i=0;i<ACH_DOING.length;i++) d += achCard(ACH_DOING[i], false);
+  document.getElementById('ach-list').innerHTML = h;
+  document.getElementById('ach-doing').innerHTML = d;
+}
+
+function achFilter(el,c){
+  var cs = document.getElementById('ach-chips').getElementsByClassName('ach-chip');
+  for(var i=0;i<cs.length;i++) cs[i].classList.remove('on');
+  el.classList.add('on');
+  var items = document.querySelectorAll('#ach-list .ach-item, #ach-doing .ach-item');
+  for(var j=0;j<items.length;j++){
+    items[j].style.display = (c==='all' || items[j].getAttribute('data-c')===c) ? 'flex' : 'none';
+  }
+  document.getElementById('ach-doing-t').style.display = (c==='all') ? 'flex' : 'none';
+  document.getElementById('ach-doing').style.display = (c==='all') ? 'block' : 'none';
+  document.getElementById('ach-empty').style.display = (c==='all') ? 'block' : 'none';
+}
+renderAch();
+
+function enterPracticePrep(){
+  document.getElementById('st-quiz').style.display='block';
+  document.getElementById('st-res').style.display='none';
+  QUIZ = BANK.slice(0,10);
+  qi = 0; answered = [];
+  renderQ();
+}
+</script>
+</body>
+</html>

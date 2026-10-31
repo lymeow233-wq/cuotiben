@@ -1,0 +1,12 @@
+# 本地备份文件，不进仓库
+.bak_*
+*.bak
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.swp
+
+# 沙箱与工具目录
+.codebuddy/
+.cloudstudio
