@@ -1,3 +1,119 @@
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+credentials.json
+
+# ==========================================
+# Python Virtual Environments
+# ==========================================
+venv/
+.venv/
+env/
+ENV/
+virtualenv/
+
+# ==========================================
+# Python Cache & Build Files
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# ==========================================
+# Python Testing & Analysis
+# ==========================================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# ==========================================
+# Jupyter Notebook
+# ==========================================
+.ipynb_checkpoints/
+
+# ==========================================
+# Node.js / Frontend
+# ==========================================
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/cache/
+.next/
+.nuxt/
+.svelte-kit/
+coverage/
+*.tsbuildinfo
+
+# ==========================================
+# Local Databases
+# ==========================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# ==========================================
+# Logs & Temporary Files
+# ==========================================
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# ==========================================
+# IDE & Editor
+# ==========================================
+.vscode/
+.idea/
+*.code-workspace
+
+# ==========================================
+# macOS
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ==========================================
+# Windows
+# ==========================================
+Thumbs.db
+Desktop.ini
+
+# ==========================================
+# Local Data & User Uploads
+# ==========================================
+data/
+uploads/
+storage/
+
 # 本地备份文件，不进仓库
 .bak_*
 .sel_*

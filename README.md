@@ -1,6 +1,37 @@
-# 错题本原型（网页版）
+# AI 自适应错题本
 
-错题收集、练习、学习报告的网页原型，包含电脑端与手机端两套界面。
+AI 驱动的智能错题本系统，支持试卷拍照识别、错题自动归集、自适应难度推荐练习。包含前端原型（电脑端 + 手机端）和后端识别服务。
+
+## 快速开始
+
+### 1. 在线体验前端（无需安装）
+
+直接访问部署好的页面：
+- **电脑端**：https://lymeow233-wq.github.io/cuotiben/
+- **手机端**：https://lymeow233-wq.github.io/cuotiben/m.html
+
+可以直接使用内置的演示数据（初三数学）体验错题本、练习、学习报告等功能。
+
+### 2. 本地运行后端（试卷识别）
+
+```bash
+# 克隆仓库
+git clone https://github.com/lymeow233-wq/cuotiben
+cd cuotiben/backend
+
+# 安装依赖
+pip install -r requirements.txt
+
+# （可选）配置 OpenAI API 以启用 AI 识别
+export OPENAI_API_KEY=sk-your-key
+
+# 启动服务
+bash run.sh
+```
+
+启动后访问 http://127.0.0.1:8000，上传 `samples/试卷照片.jpg` 测试完整识别流程。
+
+---
 
 ## 在线访问
 
@@ -15,17 +46,65 @@
 
 Pages 已启用「Deploy from a branch」模式，监听 `main` 分支根目录。
 
+## 后端服务（试卷识别）
+
+位于 `backend/` 目录，提供试卷拍照/文本导入识别功能。
+
+### 快速启动
+
+```bash
+cd backend
+pip install -r requirements.txt
+
+# 可选：配置 OpenAI API（不配则使用规则兜底）
+export OPENAI_API_KEY=sk-your-key
+export OPENAI_BASE_URL=https://api.openai.com/v1  # 可选
+export OPENAI_MODEL=gpt-4o-mini                   # 可选
+
+bash run.sh
+# 服务启动在 http://127.0.0.1:8000
+```
+
+访问 http://127.0.0.1:8000 即可打开测试页面，上传 `samples/试卷照片.jpg` 体验完整识别流程。
+
+### 测试数据
+
+- **样例试卷照片**：`backend/samples/试卷照片.jpg` - 真实初中数学试卷
+- **识别流程**：上传照片 → AI/OCR 识别 → 逐题确认编辑 → 导入错题本 → 智能推荐练习题
+
+### 功能
+
+- **文本导入**：`POST /api/import/text` - 纯文本试卷识别
+- **图片导入**：`POST /api/import/image` - 试卷拍照 OCR/VLM 识别  
+- **智能抽题**：`POST /api/recommend` - 基于错题画像推荐练习题
+- **元数据**：`GET /api/meta` - 获取 111 知识点 / 12 错误机制 / 3 难度档
+
+详见 `backend/README.md`。
+
 ## 文件结构
 
 ```
-index.html   电脑端（仓库根路径即主页）
-m.html       手机端
-sync.sh      一键同步脚本
+cuotiben/
+├── index.html           电脑端原型
+├── m.html               手机端原型
+├── knowledge-points.js  知识点配置（111个初中数学知识点）
+├── backend/             后端识别服务
+│   ├── server.py        FastAPI 服务入口
+│   ├── app/
+│   │   ├── paper_import_agent.py  试卷识别核心
+│   │   ├── engine.py              自适应抽题引擎
+│   │   └── config.py              知识点/错因/参数配置
+│   ├── static/          接入版前端页面
+│   ├── samples/         样例试卷照片（试卷照片.jpg）
+│   └── requirements.txt
+└── sync.sh              一键同步脚本
 ```
 
 两个原型文件都是单文件：HTML + CSS + JS 全部内联，**无任何外部依赖、无构建步骤**，双击即可在浏览器打开。
 
 ## 功能范围
+
+### 前端原型
 
 - **年级 × 科目分区**：首页可切换年级（初一/初二/初三）与科目（数学/语文/英语/物理/化学）。错题、练习抽题、学习报告、练习日历、导出打印全部按当前组合隔离，互不串数据；选择记录在本地浏览器，刷新后保持。
 - **练习日历**：按月展示每日练习量，有练习的日期带星标。
@@ -35,6 +114,13 @@ sync.sh      一键同步脚本
 - **学习报告**：统计作答量、累计错题、连续练习天数。
 - **导入 / 导出**：导入试卷错题，导出/打印当前范围的错题。
 
+### 后端服务
+
+- **多模态导入**：支持试卷文本粘贴、拍照识别（VLM/OCR 双路径）
+- **智能标注**：自动提取题干、知识点（111 个初中数学知识点）、错误机制（12 种）、难度分级（3 档）
+- **自适应引擎**：基于 Elo-like 算法动态调整难度，优先推送薄弱知识点
+- **规则兜底**：无 API key 时自动降级到关键词匹配+规则打分，保证可用性
+
 ## 修改后上线
 
 在本仓库目录下：
@@ -43,7 +129,9 @@ sync.sh      一键同步脚本
 bash sync.sh "这次改了什么"
 ```
 
-脚本会自动 `git add` → `commit` → `push`，随后 GitHub Pages 自动部署。不写说明时自动用时间戳。没有改动时提示无需同步。
+脚本会自动 `git add` → `commit` → `push`，随后 GitHub Pages 自动部署前端。不写说明时自动用时间戳。没有改动时提示无需同步。
+
+**注意**：后端代码修改也会同步到仓库，但后端服务需要单独部署（默认本地 `127.0.0.1:8000`）。
 
 ## 协作约定（重要）
 
