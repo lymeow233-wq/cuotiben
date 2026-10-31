@@ -8,10 +8,10 @@
 
 | 端 | 地址 |
 |---|---|
-| 电脑 | `https://<用户名>.github.io/<仓库名>/` |
-| 手机 | `https://<用户名>.github.io/<仓库名>/m.html` |
+| 电脑 | https://lymeow233-wq.github.io/cuotiben/ |
+| 手机 | https://lymeow233-wq.github.io/cuotiben/m.html |
 
-> 首次 push 后需在仓库 Settings → Pages 中确认 Source 为 **GitHub Actions**。
+> Pages 已启用「Deploy from a branch」模式，监听 `main` 分支根目录。
 
 ## 文件结构
 
