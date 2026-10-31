@@ -51,6 +51,25 @@ table.mini td{padding:8px 4px;border-bottom:1px solid #f6f7f9}
 .delta.up{color:#16a34a}.delta.dn{color:#dc2626}.delta.fl{color:#9aa0a6}
 
 .row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f6f7f9;font-size:13px}
+.vol-sec{margin-top:12px}
+.vol-hd{font-size:11.5px;color:#8a9099;display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.vol-sub{font-size:11px;color:#b0b6bd}
+.vol-bars{display:flex;align-items:flex-end;gap:3px;height:72px}
+.vb{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.vb i{display:block;width:100%;background:#cfdcfb;border-radius:3px 3px 0 0}
+.vb.today i{background:#2b6cf6}
+.vb b{font-size:9px;color:#9aa0a6;font-weight:400;margin-top:4px}
+.vb.today b{color:#2b6cf6;font-weight:700}
+.cw{font-size:10px;color:#b0b6bd;text-align:center;padding-bottom:3px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cd{position:relative;aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    font-size:11.5px;color:#c7ccd2;border-radius:7px}
+.cd span{margin-top:-4px}
+.cd.has{background:#f0f5ff;color:#2b6cf6;font-weight:600}
+.cd.has i{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:8px;
+          color:#f5a300;font-style:normal;line-height:1}
+.cd.today{box-shadow:inset 0 0 0 1px #2b6cf6}
+.cd.blank{visibility:hidden}
 .row:last-child{border:0}
 
 .tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:5px;background:#f0f2f5;color:#666;margin-right:5px}
@@ -290,10 +309,9 @@ input.inp:focus{border-color:#2b6cf6}
   <div data-page-node-id="m2Ds5OVFX8iuCLLpZQfEdT" class="screen">
 
     <!--pnid:8uMT9i66CMegZiLxxG9PNd--><!-- ================= 首页 / 导入 ================= -->
-        <div data-page-node-id="4MAG5hLKY5wmIMCE78kA9B" class="page active" id="p-home">
+    <div data-page-node-id="4MAG5hLKY5wmIMCE78kA9B" class="page active" id="p-home">
       <div data-page-node-id="CsLgv2lJYPYtrOwf1OXFmt" class="hd"><!--pnid:ruulPOKCPEehguMd4m1D1O-->今天</div>
       <div data-page-node-id="xz9wMeOo9qZTcdtg31NX1a" class="sub" id="hd-sub"><!--pnid:zhNdsA27IHcf5stP5G80zW-->已连续练习 6 天 · 上次练习 2 天前</div>
-
       <!-- ============ 年级 / 科目 ============ -->
       <div class="card" id="sc-card">
         <div class="t-l"><!--pnid:SCOPET-->我的年级和科目<span class="more" id="sc-now"></span></div>
@@ -305,28 +323,37 @@ input.inp:focus{border-color:#2b6cf6}
       <div class="g4" id="stats" style="margin-bottom:12px"></div>
 
       <div id="home-body">
-        <div data-page-node-id="4Vn3qvHk58lIXQ1Eh0CyKI" class="card">
-          <div data-page-node-id="s0tVeyXHe8CPS6bF2dX3Z" class="t-l"><!--pnid:1n9QI9dX710c4UkOh3n9vh-->今日概览</div>
+
+
+      <div class="card">
+          <div class="t-l"><!--pnid:1n9QI9dX710c4UkOh3n9vh-->今日概览</div>
           <div class="row"><span>高频错误机制</span><b id="o-em"></b></div>
           <div class="row"><span>建议练习量</span><b id="o-n"></b></div>
           <div class="row"><span>最近一次导入</span><b id="o-imp"></b></div>
         </div>
 
-        <div data-page-node-id="QI8wJGsktUhw8hNUGfMf3B" class="card">
-          <div data-page-node-id="QQ7559zcqWp8J0LZhuNl3" class="t-l"><!--pnid:PmD49Pfl598U3tiS7YWMZW-->最近导入</div>
-          <div id="o-recent"></div>
-        </div>
-        <button data-page-node-id="TaMWvs1CE4wsbww6JU7yKo" class="btn" id="o-start" onclick="enterPractice()"><!--pnid:Qzny4gga3K8G5lHptiaHJm-->今天开始练习</button>
+      <div data-page-node-id="6DHQq7Uowj33xhMAbT7FCI" class="card">
+        <div data-page-node-id="u5q9sqZO1AtLcJtwBnryEN" class="t-l"><!--pnid:Bq0FiiTpkxDz26N2nivtiM-->练习日历</div>
+        <div data-page-node-id="Ko4L33kX2lvBHAFjeE6gac" class="vol-hd" id="home-cal-hd"></div>
+        <div data-page-node-id="LzAFHFLFhfk1tMrXZBzpf6" id="home-cal"></div>
       </div>
 
+      <div class="card">
+          <div class="t-l"><!--pnid:PmD49Pfl598U3tiS7YWMZW-->最近导入</div>
+          <div id="o-recent"></div>
+        </div>
+      <button data-page-node-id="TaMWvs1CE4wsbww6JU7yKo" class="btn" id="o-start" onclick="enterPractice()"><!--pnid:Qzny4gga3K8G5lHptiaHJm-->今天开始练习</button>
+      
       <div class="card empty" id="sc-empty" style="display:none">
         <div class="em-i">📭</div>
         <div class="em-t">「<span id="sc-empty-k"></span>」下还没有错题</div>
         <div class="em-s">导入试卷后会自动归集到当前年级和科目下<br>不同年级、不同科目各算各的，不会混在一起</div>
         <button class="btn ghost" onclick="doImport()">导入试卷</button>
       </div>
+</div>
     </div>
 
+    <!--pnid:pZvGgP9yDDFFXPZx3qOWMG--><!-- ================= 导入流程 ================= -->
     <div data-page-node-id="fqhpELGzIHXjI0VGLHrOSQ" class="page" id="p-import">
       <!--pnid:BJQHb4uTwCpYBzRnF9s74I--><!-- 态 A：选来源 -->
       <div data-page-node-id="gzbnvGXoWBjRGYUG9qofcc" id="im-1">
@@ -516,8 +543,11 @@ input.inp:focus{border-color:#2b6cf6}
 
       <div data-page-node-id="bff7wpOabRI6XtsWtnZw1S" class="card">
         <div data-page-node-id="f80CHWaAeQecdqdn1EzJAG" class="t-l"><!--pnid:gcqTusScMUSNPJHJY65lvM-->练习量</div>
+        <div data-page-node-id="pHzOBm6V3qnTSQeUaJ8Spu" class="vol-sec">
+          <div data-page-node-id="FEEhPiAkRWymoDjvy7961l" class="vol-hd"><!--pnid:XIBOlaqr82xzwubaCLzzoW-->每天练习题目数<span data-page-node-id="dDD6w0Te31A96ezquyvurV" class="vol-sub"><!--pnid:5t3azYFK7Zy35JpR4VRnUw-->近 14 天</span></div>
+          <div data-page-node-id="VyFgcHulfx9ozU7CZKKLrJ" id="vol-bars"></div>
+        </div>
         <div data-page-node-id="WFzpA29EpFoPsGoeJXp2zU" class="row"><span data-page-node-id="HPSCMpOZDqtbZ3jdmPNWn0"><!--pnid:1RYvNhlGqRv2p1LiWrrTum-->累计作答</span><b data-page-node-id="mkk8kBhRCUrXaOrHWRZSH5"><!--pnid:H8cnqKTDu7yQGmpZAbBkLJ-->142 次</b></div>
-        <div data-page-node-id="4hhKnE05bhsVkrscsqpi0U" class="row"><span data-page-node-id="0od5YlF66PyO1c6zW1cP0R"><!--pnid:hhBdffgDeQFC2Akj5F7Cqx-->已练习知识点</span><b data-page-node-id="cT38NYSWwQpYxHtqI0IlsR"><!--pnid:WOFzIODcGYlCHYBfLxMgzu-->12 个</b></div>
         <div data-page-node-id="7TdbouVuzlb2a9u9qxou2u" class="row"><span data-page-node-id="vN51tOSQ4q1pcCX0DcRqcc"><!--pnid:jNFDRiO0el75qrwQUsJejB-->累计错题</span><b data-page-node-id="1Go1DL7oyplcDI14Dz5v7Q"><!--pnid:XEpxy4LEJ52MWue2O2KfiF-->17 条</b></div>
       </div>
 
@@ -614,7 +644,7 @@ input.inp:focus{border-color:#2b6cf6}
 
 <script data-page-node-id="hNy4AhNTHoneRxeOTCLR2e" data-pnid-children="H0f684bF6e6O8P6HbaihwV">
 /* 指向当前 scope 的别名；切换年级/科目时由 bindScope() 重新指向 */
-var WEAK = [], BANK = [], IMP = [], IMPORTS = [], HIST = [], ALL_WRONG = [];
+var WEAK = [], BANK = [], IMP = [], IMPORTS = [], HIST = [], ALL_WRONG = [], DAY_N = {};
 
 var BANK0 = [
  {t:"解方程 x² − 7x + 12 = 0", a:"3 或 4", tier:2, kp:"一元二次方程", em:"漏解", type:"ch",
@@ -668,6 +698,7 @@ var curTab = 0;
 function pickG(g){ if(g===CUR.grade) return; CUR.grade = g; applyScope(); }
 function pickS(s){ if(s===CUR.subject) return; CUR.subject = s; applyScope(); }
 function scopeLabel(){ return CUR.subject + ' \u00b7 ' + CUR.grade; }
+function setTxt(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; }
 function renderScope(){
   var gh='', sh='', i;
   for(i=0;i<GRADES.length;i++)
@@ -678,31 +709,35 @@ function renderScope(){
        + '" onclick="pickS(\'' + SUBJECTS[i] + '\')">' + SUBJECTS[i] + '</div>';
   document.getElementById('g-chips').innerHTML = gh;
   document.getElementById('s-chips').innerHTML = sh;
-  document.getElementById('sc-now').textContent = '\u5f53\u524d ' + scopeLabel();
+  setTxt('sc-now', '\u5f53\u524d ' + scopeLabel());
   var w = cur().weak;
-  document.getElementById('sc-note').textContent = w.length
+  setTxt('sc-note', w.length
     ? ('\u672c\u8303\u56f4 ' + w.length + ' \u4e2a\u8584\u5f31\u77e5\u8bc6\u70b9 \u00b7 '
        + wrongOf(w) + ' \u6761\u9519\u9898 \u00b7 \u4e0e\u5176\u4ed6\u5e74\u7ea7\u79d1\u76ee\u5206\u5f00\u7b97')
-    : ('\u5207\u6362\u5e74\u7ea7\u6216\u79d1\u76ee\u540e\uff0c\u7ec3\u4e60\u3001\u9519\u9898\u672c\u548c\u62a5\u544a\u90fd\u4f1a\u8ddf\u7740\u5207\u6362');
+    : ('\u5207\u6362\u5e74\u7ea7\u6216\u79d1\u76ee\u540e\uff0c\u7ec3\u4e60\u3001\u9519\u9898\u672c\u548c\u62a5\u544a\u90fd\u4f1a\u8ddf\u7740\u5207\u6362'));
 }
 function statCard(n,l){
   return '<div class="stat"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>';
 }
 function renderHome(){
   var w = cur().weak, s = cur().stats, em = topEm(w), h = '', i, n = 0;
-  document.getElementById('stats').innerHTML =
-      statCard(p1Of(w),'\u4e0d\u719f') + statCard(w.length,'\u8584\u5f31')
-    + statCard(wrongOf(w),'\u9519\u9898') + statCard(s.totalAns,'\u4f5c\u7b54');
-  document.getElementById('hd-sub').textContent = s.streak > 0
+  var st = document.getElementById('stats');
+  if(st){
+    st.innerHTML =
+        statCard(p1Of(w),'\u4e0d\u719f') + statCard(w.length,'\u8584\u5f31')
+      + statCard(wrongOf(w),'\u9519\u9898') + statCard(s.totalAns,'\u4f5c\u7b54');
+    st.style.display = (w.length || s.totalAns) ? 'grid' : 'none';
+  }
+  setTxt('hd-sub', s.streak > 0
     ? ('\u5df2\u8fde\u7eed\u7ec3\u4e60 ' + s.streak + ' \u5929 \u00b7 \u4e0a\u6b21\u7ec3\u4e60 '
        + s.last + ' \u5929\u524d')
-    : ('\u8fd9\u4e2a\u8303\u56f4\u8fd8\u6ca1\u6709\u7ec3\u4e60\u8bb0\u5f55');
-  document.getElementById('o-em').textContent = em.tot
-    ? (em.name + ' \u00b7 \u8fd1 ' + em.tot + ' \u6b21\u51fa\u73b0 ' + em.n + ' \u6b21') : '\u2014';
-  document.getElementById('o-n').textContent = N + ' \u9898';
-  document.getElementById('o-imp').textContent = cur().imports.length
+    : ('\u8fd9\u4e2a\u8303\u56f4\u8fd8\u6ca1\u6709\u7ec3\u4e60\u8bb0\u5f55'));
+  setTxt('o-em', em.tot
+    ? (em.name + ' \u00b7 \u8fd1 ' + em.tot + ' \u6b21\u51fa\u73b0 ' + em.n + ' \u6b21') : '\u2014');
+  setTxt('o-n', N + ' \u9898');
+  setTxt('o-imp', cur().imports.length
     ? (cur().imports[0].d + ' ' + cur().imports[0].name + ' \u00b7 '
-       + cur().imports[0].n + ' \u6761\u9519\u9898') : '\u6682\u65e0\u5bfc\u5165';
+       + cur().imports[0].n + ' \u6761\u9519\u9898') : '\u6682\u65e0\u5bfc\u5165');
   h = '';
   for(i=0;i<cur().imports.length;i++){
     var m = cur().imports[i];
@@ -710,14 +745,21 @@ function renderHome(){
        + '<span class="tag em">' + m.n + ' \u6761\u9519\u9898</span>'
        + '<span class="tag ok">\u5df2\u786e\u8ba4</span></span></div>';
   }
-  if(!h) h = '<div class="hint">\u8fd8\u6ca1\u6709\u5bfc\u5165\u8bb0\u5f55</div>';
-  document.getElementById('o-recent').innerHTML = h;
+  if(!h) h = '<div class="hint">还没有导入记录</div>';
+  setTxt('o-recent', h);
+  var orr = document.getElementById('o-recent');
+  if(orr) orr.innerHTML = h;
   var empty = (w.length === 0 || BANK.length === 0);
-  document.getElementById('stats').style.display = empty ? 'none' : 'grid';
-  document.getElementById('home-body').style.display = empty ? 'none' : 'block';
-  document.getElementById('sc-empty').style.display = empty ? 'block' : 'none';
-  document.getElementById('o-start').disabled = empty;
-  if(empty) document.getElementById('sc-empty-k').textContent = scopeLabel();
+  var hb = document.getElementById('home-body');
+  if(hb) hb.style.display = empty ? 'none' : 'block';
+  var se = document.getElementById('sc-empty');
+  if(se) se.style.display = empty ? 'block' : 'none';
+  var os = document.getElementById('o-start');
+  if(os) os.disabled = empty;
+  if(empty) setTxt('sc-empty-k', scopeLabel());
+  /* 日历 / 练习量跟随当前范围重算 */
+  if(typeof renderVolume === 'function') renderVolume();
+  if(typeof renderCal === 'function') renderCal();
 }
 /* 报告页：把内容整体包进 rpt-body，空范围时整块隐藏 */
 function wrapReport(){
@@ -737,12 +779,12 @@ function wrapReport(){
 function renderReport(){
   var hd = document.getElementById('rpt-hd');
   var b = document.getElementById('rpt-body'), e = document.getElementById('rpt-empty');
-  if(!b) return;
+  if(!b || !e) return;
   if(hd) hd.textContent = '学习报告 · ' + scopeLabel();
   var has = WEAK.length > 0;
   b.style.display = has ? 'block' : 'none';
   e.style.display = has ? 'none' : 'block';
-  if(!has){ document.getElementById('rpt-empty-k').textContent = scopeLabel(); return; }
+  if(!has){ setTxt('rpt-empty-k', scopeLabel()); return; }
 }
 function applyScope(){
   bindScope();
@@ -752,6 +794,8 @@ function applyScope(){
   SID = HIST.length ? (HIST[HIST.length-1].session + 1) : 1;
   if(!cur().stats.practiced && WEAK.length) cur().stats.practiced = WEAK.length;
   renderScope(); renderHome(); renderWeak('all'); renderReport();
+  var sc = document.getElementById('e-scope');
+  if(sc && typeof onScope === 'function') onScope();
   go('p-home');
   saveState();
 }
@@ -932,8 +976,8 @@ function checkAns(v, q){
 }
 function practiceOne(i, j){
   var w = WEAK[i], q = w.qs[j];
-  startOne({t:q.t, a:q.ans, alt:altsOf(q.ans), tier:tierNum(w.tier), kp:w.kp,
-            em:w.em, type:'in'}, i, j);
+  startOne({t:q.t, a:q.a || q.ans, alt:altsOf(q.a || q.ans), tier:tierNum(w.tier), kp:w.kp,
+            em:w.em, type:q.type || 'in', opts:q.opts, ai:q.ai}, i, j);
 }
 function startOne(q, i, j){
   ONE = {i:i, j:j}; ONE_OK = null;
@@ -991,39 +1035,46 @@ function drawMix(n, byKp, skip){
   return out;
 }
 function fixTypes(list){
-  var n = list.length, i, j, q;
-  var quota = {app: Math.max(1, Math.round(n*0.2)), ch: Math.max(1, Math.round(n*0.4))};
-  var cnt = {app:0, ch:0, in:0};
+  var n=list.length, i, j, k;
+  var quota={ch:Math.round(n*0.4), in:Math.round(n*0.4), app:Math.round(n*0.2)};
+  if(quota.ch<1) quota.ch=1;
+  if(quota.in<1) quota.in=1;
+  if(quota.app<1) quota.app=1;
+  var cnt={ch:0, in:0, app:0};
   for(i=0;i<list.length;i++) cnt[list[i].type]++;
-  var out = list.slice();
+  var out=list.slice(), types=['ch','in','app'];
   for(i=0;i<out.length;i++){
-    var need = null;
-    if(cnt.app < quota.app) need = 'app';
-    else if(cnt.ch < quota.ch) need = 'ch';
+    var q=out[i];
+    if(cnt[q.type] <= quota[q.type]) continue;        // 这个题型没超配额，保留
+    var need=null;
+    for(j=0;j<types.length;j++){ if(cnt[types[j]] < quota[types[j]]){ need=types[j]; break; } }
     if(!need) break;
-    q = out[i];
-    if(q.type === need) continue;
-    var has = {};
-    for(j=0;j<out.length;j++) has[out[j].t] = 1;
-    var cand = null;
-    for(j=0;j<BANK.length;j++){                       // 优先补同知识点的题
-      if(BANK[j].type === need && !has[BANK[j].t] && BANK[j].kp === q.kp){ cand = BANK[j]; break; }
+    var has={};                                       // 同轮不重复出题
+    for(j=0;j<out.length;j++) has[out[j].t]=1;
+    var cand=null;
+    for(k=0;k<BANK.length;k++){                       // 优先补同知识点的题
+      if(BANK[k].type===need && !has[BANK[k].t] && BANK[k].kp===q.kp){ cand=BANK[k]; break; }
     }
     if(!cand){
-      for(j=0;j<BANK.length;j++){ if(BANK[j].type === need && !has[BANK[j].t]){ cand = BANK[j]; break; } }
+      for(k=0;k<BANK.length;k++){ if(BANK[k].type===need && !has[BANK[k].t]){ cand=BANK[k]; break; } }
     }
     if(!cand) break;
-    cnt[q.type]--; cnt[need]++; out[i] = cand;
+    cnt[q.type]--; cnt[need]++; out[i]=cand;
   }
   return out;
+}
+function orderTypes(list){
+  var ord = {ch:1, in:2, app:3};
+  function rank(q){ return ord[q.type] === undefined ? 2 : ord[q.type]; }
+  return list.slice().sort(function(a,b){ return rank(a) - rank(b); });
 }
 function draw(n, kp){
   var byKp = {}, i, k;
   for(i=0;i<BANK.length;i++){ k = BANK[i].kp; if(!byKp[k]) byKp[k] = []; byKp[k].push(BANK[i]); }
-  if(!kp) return fixTypes(drawMix(n, byKp, null));
+  if(!kp) return orderTypes(fixTypes(drawMix(n, byKp, null)));
   var hit = byKp[kp] || [], take = Math.max(1, Math.round(n*0.6));
   var out = hit.slice(0, Math.min(take, hit.length));
-  return fixTypes(out.concat(drawMix(n - out.length, byKp, kp)).slice(0, n));
+  return orderTypes(fixTypes(out.concat(drawMix(n - out.length, byKp, kp)).slice(0, n)));
 }
 function kpList(list){
   var c = {}, ord = [], i;
@@ -1100,8 +1151,10 @@ function nextQ(){
       ok = checkAns(v, q);
     }
     ONE_OK = ok;
+    addToday(); renderVolume(); renderCal();
     answered.push({v:v, ok:ok});
     HIST.push({qid:q.t, kp:q.kp, tier:q.tier, ok:ok, d:TODAY, session:SID, role:'bank'});
+    if(!ok) addWrong(q, v);
     saveState();
     var ansTxt = (q.type === 'ch') ? ('ABCD'[q.ai] + '. ' + q.opts[q.ai]) : q.a;
     document.getElementById('q-fb').innerHTML = ok
@@ -1166,7 +1219,7 @@ function doImport(){
 var EMS = ['漏解','符号错误','计算失误','漏条件','审题遗漏','概念混淆','方法选择错误',
            '公式记忆错误','分类讨论不全','图形误读','单位与量纲错误','待确认'];
 
-/* ===== 年级 × 科目：错题 / 练习 / 报告的一级分区 ===== */
+/* ===== 年级 × 科目：错题 / 练习 / 报告 / 日历的一级分区 ===== */
 var GRADES = ['初一','初二','初三'];
 var SUBJECTS = ['数学','语文','英语','物理','化学'];
 var CUR = {grade:'初三', subject:'数学'};
@@ -1174,7 +1227,7 @@ var SCOPES = {};
 function skey(g,s){ return (s||CUR.subject)+'|'+(g||CUR.grade); }
 function scopeOf(g,s){
   var k = skey(g,s);
-  if(!SCOPES[k]) SCOPES[k] = {weak:[], imp:[], bank:[], imports:[], hist:[],
+  if(!SCOPES[k]) SCOPES[k] = {weak:[], imp:[], bank:[], imports:[], hist:[], days:{},
       stats:{streak:0, last:0, totalAns:0, practiced:0}};
   return SCOPES[k];
 }
@@ -1183,7 +1236,12 @@ function bindScope(){
   var s = cur();
   if(!s.hist) s.hist = [];
   if(!s.stats) s.stats = {streak:0, last:0, totalAns:0, practiced:0};
-  WEAK = s.weak; BANK = s.bank; IMP = s.imp; IMPORTS = s.imports; HIST = s.hist;
+  if(!s.days) s.days = {};
+  if(!s.bank) s.bank = [];
+  if(!s.imp) s.imp = [];
+  if(!s.imports) s.imports = [];
+  if(!s.weak) s.weak = [];
+  WEAK = s.weak; BANK = s.bank; IMP = s.imp; IMPORTS = s.imports; HIST = s.hist; DAY_N = s.days;
   ALL_WRONG = [];
   for(var i=0;i<WEAK.length;i++) for(var j=0;j<WEAK[i].qs.length;j++)
     ALL_WRONG.push({t:WEAK[i].qs[j].t, a:WEAK[i].qs[j].ans, d:WEAK[i].qs[j].d});
@@ -1204,7 +1262,7 @@ var IMPORTS0 = [{d:'10-28', name:'数学周测', n:5},
                 {d:'10-22', name:'课堂作业', n:3},
                 {d:'10-15', name:'单元测试', n:4}];
 SCOPES['数学|初三'] = {weak:WEAK0, imp:IMP0, bank:BANK0, imports:IMPORTS0,
-  hist:[], stats:{streak:6, last:2, totalAns:142, practiced:12}};
+  hist:[], days:{}, stats:{streak:6, last:2, totalAns:142, practiced:12}};
 
 var IMPD = null, IMPCFM = null, IMPDATE = "";
 function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;'); }
@@ -1313,10 +1371,51 @@ function finishImport(){
   go('p-book');
 }
 
-/* ===== 本地持久化（刷新不丢） ===== */
-var LS_KEY = 'aimbook_m_v1';
+/* ===== 每日练习量（直方图 + 日历星标的数据源） ===== */
+var DAY_N0 = {
+ '10-01':0,'10-02':8,'10-03':6,'10-04':0,'10-05':10,'10-06':0,'10-07':12,'10-08':7,
+ '10-09':0,'10-10':9,'10-11':5,'10-12':11,'10-13':0,'10-14':13,'10-15':8,'10-16':0,
+ '10-17':8,'10-18':12,'10-19':0,'10-20':10,'10-21':6,'10-22':14,'10-23':0,'10-24':9,
+ '10-25':0,'10-26':10,'10-27':7,'10-28':13,'10-29':11,'10-30':10
+};
+function dstr(v){
+  var m = Math.floor((v-1)/31) + 1, d = v - (m-1)*31;
+  return (m<10?'0':'') + m + '-' + (d<10?'0':'') + d;
+}
+function dayCount(d){ return (DAY_N && DAY_N[d]) || 0; }
+function addToday(){ if(!DAY_N) DAY_N = {}; DAY_N[TODAY] = (DAY_N[TODAY] || 0) + 1; }
+function renderVolume(){
+  var base = doy(TODAY), arr = [], i, max = 1;
+  for(i=13;i>=0;i--){ var ds = dstr(base - i); var n = dayCount(ds); if(n > max) max = n; arr.push({d:ds, n:n}); }
+  var h = '<div class="vol-bars">';
+  for(i=0;i<arr.length;i++){
+    var pct = arr[i].n ? Math.max(6, Math.round(arr[i].n / max * 100)) : 2;
+    h += '<div class="vb' + (i === arr.length-1 ? ' today' : '') + '">'
+      +  '<i style="height:' + pct + '%"></i><b>' + parseInt(arr[i].d.split('-')[1], 10) + '</b></div>';
+  }
+  h += '</div>';
+  document.getElementById('vol-bars').innerHTML = h;
+}
+function renderCal(){
+  var lead = (new Date(2025, 9, 1).getDay() + 6) % 7;   // 周一为第一列
+  var ws = ['一','二','三','四','五','六','日'], h = '<div class="cal-grid">', i, cnt = 0;
+  for(i=0;i<7;i++) h += '<div class="cw">' + ws[i] + '</div>';
+  for(i=0;i<lead;i++) h += '<div class="cd blank"></div>';
+  for(i=1;i<=31;i++){
+    var ds = (i<10 ? '10-0' : '10-') + i, n = dayCount(ds), has = n > 0;
+    if(has) cnt++;
+    var cls = 'cd' + (has ? ' has' : '') + (ds === TODAY ? ' today' : '');
+    h += '<div class="' + cls + '" title="' + ds + '"><span>' + i + '</span>'
+      +  (has ? '<i>★</i>' : '') + '</div>';
+  }
+  h += '</div>';
+  document.getElementById('home-cal').innerHTML = h;
+  document.getElementById('home-cal-hd').innerHTML = '<!--pnid:Kq7wZt2mXbNc5VdR8sLp3H-->10 月 · '
+    + '<span data-page-node-id="E4y6YDJAKDpwsXIsbBp03m" class="vol-sub">' + cnt + ' 天有练习</span>';
+}
+
+var LS_KEY = 'aimbook_m_v2';
 var SID = 1;
-bindScope();
 function saveState(){
   try{
     localStorage.setItem(LS_KEY, JSON.stringify({
@@ -1354,6 +1453,34 @@ function loadState(){
 function resetLocal(){
   try{ localStorage.removeItem(LS_KEY); }catch(e){}
   location.reload();
+}
+
+function addWrong(q, myAns){
+  var i, j, w = null, em = q.em || '待确认';
+  for(i=0;i<WEAK.length;i++){ if(WEAK[i].kp === q.kp){ w = WEAK[i]; break; } }
+  if(!w){
+    w = {kp:q.kp, p:'p1', st:'不熟', em:em, emN:1, n:0, acc:'—', accCls:'red',
+         days:0, tier:({1:'简单',2:'中等',3:'困难'})[q.tier] || '中等', prog:10,
+         ems:[[em,1]], qs:[]};
+    WEAK.push(w);
+  }
+  for(i=0;i<w.qs.length;i++){
+    if(w.qs[i].t === q.t){                       // 同一题再次做错：更新，不重复计数
+      w.qs[i].mine = myAns || '（空）';
+      w.qs[i].m = '最近 ' + TODAY + ' · 本次练习仍错';
+      w.qs[i].d = TODAY;
+      return;
+    }
+  }
+  w.qs.push({t:q.t, a:q.a, ans:q.a, mine:myAns || '（空）',
+             m:'首次 ' + TODAY + ' · 本次练习做错 · 来自题库', d:TODAY,
+             type:q.type, opts:q.opts, ai:q.ai, em:em});
+  w.n = w.qs.length; w.emN++;
+  var hit = false;
+  for(j=0;j<w.ems.length;j++){ if(w.ems[j][0] === em){ w.ems[j][1]++; hit = true; break; } }
+  if(!hit) w.ems.push([em, 1]);
+  ALL_WRONG.push({t:q.t, a:q.a, d:TODAY});
+  renderWeak('all');
 }
 
 /* ===== 导出打印 ===== */
@@ -1415,6 +1542,8 @@ function doExport(){
   document.getElementById('p-print').classList.add('printing');
 }
 var RESTORED = loadState();   // 刷新后回到上次状态，不是内置演示数据
+/* 没有本地数据时，把内置日历数据挂到「数学 · 初三」；有本地数据则各范围各用自己的 */
+if(!RESTORED){ var sc0 = scopeOf('初三','数学'); if(sc0) sc0.days = DAY_N0; }
 bindScope();
 wrapReport();
 renderScope();
@@ -1422,6 +1551,8 @@ renderHome();
 renderWeak('all');
 renderReport();
 enterPracticePrep();
+renderVolume();
+renderCal();
 
 /* ===== 成就系统：判定结果由作答流水回算，每条都能展开到题目 ===== */
 var ACH = [
@@ -1506,7 +1637,7 @@ renderAch();
 function enterPracticePrep(){
   document.getElementById('st-quiz').style.display='block';
   document.getElementById('st-res').style.display='none';
-  QUIZ = BANK.slice(0,10);
+  QUIZ = draw(N, '');
   qi = 0; answered = [];
   renderQ();
 }
